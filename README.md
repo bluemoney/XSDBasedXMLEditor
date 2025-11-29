@@ -41,7 +41,7 @@ A lightweight, browser-based XML editor that parses XSD files to generate a dyna
    Bash  
    git clone https://github.com/bluemoney/XSDBasedXMLEditor.git
 
-2. 直接使用瀏覽器 (Chrome, Firefox, Edge, Safari) 開啟 index.html 即可使用。
+2. 直接使用瀏覽器 (Chrome, Firefox, Edge, Safari) 開啟 xsdView.html 即可使用。
 
 ### **使用方式 (Usage)**
 
