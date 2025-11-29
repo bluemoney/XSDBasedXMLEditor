@@ -1,3 +1,5 @@
+這是一份為您的 **XSD-based XML Editor** 專案量身打造的 README.md 文件。內容涵蓋了專案介紹、功能特色、使用方式以及技術細節，您可以直接將其複製並貼上到 GitHub 儲存庫的根目錄中。
+
 ---
 
 # **🔧 XSD-Based XML Editor**
@@ -8,7 +10,7 @@ A lightweight, browser-based XML editor that parses XSD files to generate a dyna
 
 🔗 **Project URL:** [https://github.com/bluemoney/XSDBasedXMLEditor](https://www.google.com/search?q=https://github.com/bluemoney/XSDBasedXMLEditor)
 
-## **✨ 特色 (Features)**##
+## **✨ 特色 (Features)**
 
 * **無伺服器架構 (Serverless)**：純 HTML/JS/CSS 實作，無需後端，直接在瀏覽器運行。  
 * **XSD 智能解析 (Smart XSD Parsing)**：  
