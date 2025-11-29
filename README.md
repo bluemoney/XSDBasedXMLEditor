@@ -1,5 +1,3 @@
-這是一份為您的 **XSD-based XML Editor** 專案量身打造的 README.md 文件。內容涵蓋了專案介紹、功能特色、使用方式以及技術細節，您可以直接將其複製並貼上到 GitHub 儲存庫的根目錄中。
-
 ---
 
 # **🔧 XSD-Based XML Editor**
