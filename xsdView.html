@@ -3,163 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSD XML Editor (Correct XPath)</title>
+    <title>XSD XML Editor (Annotated)</title>
     <style>
+        /* --- CSS Variables Definition (Core Theming Mechanism) --- */
         /* --- CSS 變數定義 (核心換膚機制) --- */
         :root {
-            /* 背景與主色調 */
+            /* Background and Main Colors / 背景與主色調 */
             --primary-start: #667eea;
             --primary-end: #764ba2;
             --primary-shadow: rgba(102, 126, 234, 0.4);
             --primary-border: #667eea;
             --bg-light: #f7f9fc;
 
-            /* 按鈕配色 */
-            --btn-val-s: #11998e; --btn-val-e: #38ef7d; --btn-val-shadow: rgba(56, 239, 125, 0.4);
-            --btn-exp-s: #f093fb; --btn-exp-e: #f5576c; --btn-exp-shadow: rgba(245, 87, 108, 0.4);
-            --btn-clr-s: #ff9a9e; --btn-clr-e: #fecfef; --btn-clr-shadow: rgba(255, 154, 158, 0.4);
+            /* Button Colors: Validate (Primary Action) / 按鈕配色：驗證 (主要行動) */
+            --btn-val-s: #11998e; 
+            --btn-val-e: #38ef7d;
+            --btn-val-shadow: rgba(56, 239, 125, 0.4);
+
+            /* Button Colors: Export (Secondary Action) / 按鈕配色：匯出 (次要行動) */
+            --btn-exp-s: #f093fb; 
+            --btn-exp-e: #f5576c;
+            --btn-exp-shadow: rgba(245, 87, 108, 0.4);
+
+            /* Button Colors: Clear (Tertiary Action) / 按鈕配色：清除 (第三行動) */
+            --btn-clr-s: #ff9a9e; 
+            --btn-clr-e: #fecfef;
+            --btn-clr-shadow: rgba(255, 154, 158, 0.4);
         }
 
+        /* Basic Reset / 基礎重置 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Use variables for dynamic theming / 使用變數以實現動態換膚 */
             background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
             min-height: 100vh;
             padding: 20px;
-            transition: background 0.5s ease;
-            display: flex; justify-content: center; align-items: flex-start;
+            transition: background 0.5s ease; /* Smooth transition / 平滑過渡效果 */
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start;
         }
 
+        /* Main Container / 主容器 */
         .container {
-            width: 95%; max-width: 100%; margin: 0 auto;
+            width: 95%;           /* Responsive width / 響應式寬度 */
+            max-width: 100%;      /* Remove fixed width limit / 移除固定寬度限制 */
+            margin: 0 auto;
+            
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
-            display: flex; flex-direction: column;
+            display: flex; 
+            flex-direction: column;
             min-height: 85vh;
         }
 
+        /* Header Section / 標題區域 */
         .header {
             background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
-            color: white; padding: 30px; text-align: center; transition: background 0.5s ease;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            transition: background 0.5s ease;
         }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); }
 
+        /* Controls Toolbar / 控制工具列 */
         .controls {
             padding: 20px; background: var(--bg-light); border-bottom: 2px solid #e0e7ff;
             display: flex; gap: 15px; flex-wrap: wrap; align-items: center;
         }
 
+        /* File Input Styling / 檔案上傳樣式 */
         .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
-        .file-input-wrapper input[type=file] { position: absolute; left: -9999px; }
+        .file-input-wrapper input[type=file] { position: absolute; left: -9999px; } /* Hide native input / 隱藏原生輸入框 */
+
         .file-input-label {
             background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
-            color: white; padding: 12px 25px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+            color: white;
+            padding: 12px 25px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
             display: inline-block; font-weight: 600; box-shadow: 0 4px 15px var(--primary-shadow);
         }
         .file-input-label:hover { transform: translateY(-2px); }
 
+        /* General Button Styles / 通用按鈕樣式 */
         .btn {
-            color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease;
+            color: white; border: none;
+            padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;
+            transition: all 0.3s ease;
         }
         .btn:hover:not(:disabled) { transform: translateY(-2px); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .btn-validate { background: linear-gradient(135deg, var(--btn-val-s) 0%, var(--btn-val-e) 100%); box-shadow: 0 4px 15px var(--btn-val-shadow); }
-        .btn-export { background: linear-gradient(135deg, var(--btn-exp-s) 0%, var(--btn-exp-e) 100%); box-shadow: 0 4px 15px var(--btn-exp-shadow); }
-        .btn-clear { background: linear-gradient(135deg, var(--btn-clr-s) 0%, var(--btn-clr-e) 100%); box-shadow: 0 4px 15px var(--btn-clr-shadow); }
+        /* Themed Buttons / 主題化按鈕 */
+        .btn-validate {
+            background: linear-gradient(135deg, var(--btn-val-s) 0%, var(--btn-val-e) 100%);
+            box-shadow: 0 4px 15px var(--btn-val-shadow);
+        }
+        .btn-export {
+            background: linear-gradient(135deg, var(--btn-exp-s) 0%, var(--btn-exp-e) 100%);
+            box-shadow: 0 4px 15px var(--btn-exp-shadow);
+        }
+        .btn-clear {
+            background: linear-gradient(135deg, var(--btn-clr-s) 0%, var(--btn-clr-e) 100%);
+            box-shadow: 0 4px 15px var(--btn-clr-shadow);
+        }
 
+        /* Content Layout / 內容佈局 */
         .content { display: flex; gap: 20px; padding: 20px; min-height: 600px; flex-grow: 1; }
-        .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; }
-        .panel:first-child { flex: 0 0 calc(65% - 10px); max-width: calc(65% - 10px); }
-        .panel:last-child { flex: 0 0 calc(35% - 10px); max-width: calc(35% - 10px); }
         
-        @media (max-width: 768px) {
-            .content { flex-direction: column; }
-            .panel:first-child, .panel:last-child { flex: 1 1 100%; max-width: 100%; }
+        .panel { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 20px; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        /* Left Panel (Editor) - 65% Width / 左側面板 (編輯器) - 佔 65% */
+        .panel:first-child {
+            flex: 0 0 calc(65% - 10px);
+            max-width: calc(65% - 10px);
+        }
+
+        /* Right Panel (Info) - 35% Width / 右側面板 (資訊) - 佔 35% */
+        .panel:last-child {
+            flex: 0 0 calc(35% - 10px);
+            max-width: calc(35% - 10px);
         }
         
-        .panel-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid var(--primary-border); }
+        /* Responsive Design for Mobile / 手機版響應式設計 */
+        @media (max-width: 768px) {
+            .content { flex-direction: column; }
+            .panel:first-child, .panel:last-child {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+        }
+        
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-border);
+        }
+        
         .panel-title { font-size: 1.3em; font-weight: 600; color: #333; margin-bottom: 0; }
 
-        .view-toggle-btn { background: #f3f4f6; color: #6b7280; border: 2px solid #e5e7eb; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
-        .view-toggle-btn.active { background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%); color: white; border-color: transparent; }
+        /* View Toggle Buttons / 視圖切換按鈕 */
+        .view-toggle-btn {
+            background: #f3f4f6; color: #6b7280; border: 2px solid #e5e7eb; padding: 8px 15px;
+            border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s;
+        }
+        .view-toggle-btn.active {
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            color: white; border-color: transparent;
+        }
 
+        /* Tree View Styles / 樹狀圖樣式 */
         .tree-view { font-family: 'Courier New', monospace; line-height: 1.8; overflow: auto; max-height: 700px; flex-grow: 1; }
         .tree-node { margin-left: 20px; position: relative; }
         .tree-node.root { margin-left: 0; }
+        
         .node-header { display: flex; align-items: center; padding: 5px; border-radius: 5px; transition: background 0.2s; cursor: pointer; }
         .node-header:hover { background: rgba(0,0,0, 0.05); }
-        .toggle-btn { width: 20px; height: 20px; margin-right: 8px; cursor: pointer; user-select: none; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-start); color: white; border-radius: 3px; font-size: 12px; transition: transform 0.2s; }
+
+        .toggle-btn {
+            width: 20px; height: 20px; margin-right: 8px; cursor: pointer; user-select: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--primary-start);
+            color: white; border-radius: 3px; font-size: 12px; transition: transform 0.2s;
+        }
         .toggle-btn.collapsed { background: #9ca3af; }
+
         .node-tag { color: #2563eb; font-weight: 600; }
         .node-attribute { color: #dc2626; margin-left: 10px; }
         .node-children { display: block; border-left: 2px solid #e5e7eb; margin-left: 10px; padding-left: 10px; }
         .node-children.collapsed { display: none; }
-        .edit-input { border: 1px solid var(--primary-border); border-radius: 4px; padding: 2px 6px; font-family: inherit; font-size: inherit; color: #059669; background: rgba(255, 255, 255, 0.8); }
+        
+        .edit-input {
+            border: 1px solid var(--primary-border);
+            border-radius: 4px; padding: 2px 6px; font-family: inherit; font-size: inherit; color: #059669;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
         .add-btn { margin-left: 10px; padding: 2px 8px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
         .add-btn:hover { background: #059669; transform: scale(1.05); }
         
+        /* Source Code Editor / 原始碼編輯器 */
         .xml-editor-container { position: relative; height: 700px; overflow: auto; border: 1px solid #e5e7eb; border-radius: 8px; margin-top: 15px; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.8; flex-grow: 1; }
         .line-numbers { float: left; width: 45px; height: 100%; background: #f7f9fc; color: #9ca3af; text-align: right; padding: 10px 10px 10px 0; border-right: 1px solid #e5e7eb; user-select: none; }
         #xmlRawInput { position: absolute; top: 0; left: 45px; width: calc(100% - 45px); height: 100%; border: none; outline: none; resize: none; padding: 10px; background: transparent; color: transparent; caret-color: #333; font-family: inherit; font-size: inherit; line-height: inherit; }
         #xmlHighlight { padding: 10px; white-space: pre; pointer-events: none; }
         .xml-tag { color: #2563eb; } .xml-attr-name { color: #9d174d; } .xml-attr-value { color: #dc2626; } .xml-content { color: #059669; }
         
-        /* Modal Styles */
+        /* Modal (Popup) Styles / 彈出視窗樣式 */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); animation: fadeIn 0.3s; }
         .modal.show { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content { background: white; margin: 5% auto; padding: 0; border-radius: 12px; width: 600px; max-width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideDown 0.3s; }
         @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-header { background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            color: white; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;
+        }
         .modal-header h3 { margin: 0; font-size: 1.3em; }
         .close-modal { background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
         .close-modal:hover { transform: rotate(90deg); }
         .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
         .element-option { padding: 12px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: white; }
-        .element-option:hover { border-color: var(--primary-border); background: var(--bg-light); transform: translateX(5px); }
+        
+        .element-option:hover {
+            border-color: var(--primary-border);
+            background: var(--bg-light); transform: translateX(5px);
+        }
         .element-option.selected { border-color: var(--primary-border); background: var(--bg-light); }
+        
         .element-name { font-weight: 600; color: #2563eb; font-size: 1.1em; }
         .element-type { font-size: 0.9em; color: #6b7280; margin-top: 4px; }
         .element-constraints { font-size: 0.85em; color: #9ca3af; margin-top: 4px; }
         .modal-footer { padding: 15px 20px; border-top: 1px solid #e5e7eb; display: flex; gap: 10px; justify-content: flex-end; }
         .modal-btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-        .modal-btn.primary { background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%); color: white; }
+        
+        .modal-btn.primary {
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            color: white;
+        }
         .modal-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px var(--primary-shadow); }
+        
         .modal-btn.secondary { background: #f3f4f6; color: #6b7280; }
         .modal-btn.secondary:hover { background: #e5e7eb; }
         .custom-input-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #e5e7eb; }
-        .custom-input { width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 6px; font-size: 1em; transition: border-color 0.2s; }
+        
+        .custom-input {
+            width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 6px; font-size: 1em; transition: border-color 0.2s;
+        }
         .custom-input:focus { outline: none; border-color: var(--primary-border); }
-        select.custom-input { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 1em; cursor: pointer; }
+        
+        select.custom-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 1em;
+            cursor: pointer;
+        }
+
         .attribute-input-group { margin-top: 15px; padding: 10px; background: #f9fafb; border-radius: 6px; }
         .attribute-row { display: flex; gap: 10px; margin-bottom: 10px; }
         .attribute-row input { flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; }
         .attribute-row input:focus { border-color: var(--primary-border); outline: none; }
+
         .delete-btn { margin-left: 10px; padding: 2px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
         .validation-result { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: 500; animation: slideIn 0.3s ease; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .validation-result.valid { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%); border: 2px solid #10b981; color: #059669; }
         .validation-result.invalid { background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%); border: 2px solid #ef4444; color: #dc2626; }
         .status-bar { background: #f3f4f6; padding: 10px 20px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #6b7280; }
-        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f4f6; border-top: 3px solid var(--primary-start); border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        .loading {
+            display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f4f6;
+            border-top: 3px solid var(--primary-start);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .edit-btn { background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); }
-        .attribute-option { padding: 8px; margin: 5px; border: 1px solid #e5e7eb; border-radius: 5px; cursor: pointer; display: inline-block; transition: all 0.2s; background: #f9fafb; font-size: 0.9em; }
-        .attribute-option:hover { background: var(--bg-light); border-color: var(--primary-border); }
+        
+        .attribute-option {
+            padding: 8px; margin: 5px; border: 1px solid #e5e7eb; border-radius: 5px; cursor: pointer; display: inline-block; transition: all 0.2s; background: #f9fafb; font-size: 0.9em;
+        }
+        .attribute-option:hover {
+            background: var(--bg-light); border-color: var(--primary-border);
+        }
         .attribute-option.required { font-weight: bold; color: #dc2626; }
         .value-input-section { margin-top: 20px; }
-        .select-box { padding: 12px; border-radius: 8px; border: 1px solid #e0e7ff; background: white; color: #555; font-weight: 600; cursor: pointer; outline: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: border-color 0.3s; }
-        .select-box:hover { border-color: var(--primary-border); }
-        .footer { background: #f8fafc; padding: 15px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0; display: flex; justify-content: center; gap: 15px; align-items: center; }
-        .footer-link { display: flex; align-items: center; gap: 6px; color: var(--primary-start); text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
-        .footer-link:hover { color: var(--primary-end); text-decoration: underline; }
+        
+        /* Select Box Styles / 選單樣式 */
+        .select-box {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e0e7ff;
+            background: white;
+            color: #555;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: border-color 0.3s;
+        }
+        .select-box:hover {
+            border-color: var(--primary-border);
+        }
+
+        /* Footer Styles / 頁尾樣式 */
+        .footer {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            align-items: center;
+        }
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary-start);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .footer-link:hover {
+            color: var(--primary-end);
+            text-decoration: underline;
+        }
         .separator { color: #cbd5e1; }
 
-        /* --- 標籤與 XPath 樣式 --- */
+        /* --- Badge & XPath Styles / 標籤與 XPath 樣式 --- */
         .constraints-container { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 5px; margin-left: 24px; }
         .constraint-badge { font-size: 0.75em; padding: 2px 6px; border-radius: 4px; font-family: 'Consolas', monospace; display: inline-flex; align-items: center; gap: 4px; }
         .badge-count { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
@@ -169,7 +336,7 @@
         .badge-complex { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; font-weight: bold; }
         .badge-simple { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-weight: bold; }
         
-        /* XPath Badge */
+        /* XPath Badge / XPath 標籤樣式 */
         .badge-xpath { 
             background: #2d3748; color: #e2e8f0; border: 1px solid #1a202c; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.8em; width: 100%; display: block; margin-top: 6px; padding: 6px 10px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -182,6 +349,7 @@
             <h1 data-i18n="app_title">🔧 XSD-based XML Editor</h1>
             <p data-i18n="app_subtitle">載入XSD架構，編輯並驗證您的XML文件</p>
         </div>
+        
         <div class="controls">
             <div class="file-input-wrapper">
                 <input type="file" id="xsdFile" accept=".xsd">
@@ -209,6 +377,7 @@
                 <option value="morandi-pink" data-i18n="theme_pink">莫蘭迪粉</option>
             </select>
         </div>
+        
         <div class="content">
             <div class="panel">
                 <div class="panel-header">
@@ -229,6 +398,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="panel">
                 <div class="panel-header">
                     <h2 class="panel-title" data-i18n="panel_xsd_info">XSD 架構資訊</h2>
@@ -237,10 +407,12 @@
                 <div id="schemaInfo" style="color: #6b7280; margin-top: 15px;"><p data-i18n="msg_no_schema">尚未載入架構</p></div>
             </div>
         </div>
+        
         <div class="status-bar">
             <span id="statusText" data-i18n="status_ready">就緒</span>
             <span id="nodeCount" data-i18n="status_nodes">節點數: 0</span>
         </div>
+        
         <div class="footer">
             <a href="https://github.com/bluemoney/XSDBasedXMLEditor" target="_blank" class="footer-link">
                 <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
@@ -295,14 +467,17 @@
     </div>
 
     <script>
-        let xsdDoc = null;
-        let xmlDoc = null;
-        let nodeIdCounter = 0;
-        let xsdElements = new Map();
-        let currentParentNode = null;
-        let currentNodeToModify = null;
+        // --- Global Variables / 全域變數 ---
+        let xsdDoc = null;          // Stores the parsed XSD document / 儲存解析後的 XSD 文件
+        let xmlDoc = null;          // Stores the XML document being edited / 儲存正在編輯的 XML 文件
+        let nodeIdCounter = 0;      // Unique ID counter for tree nodes / 樹狀節點的唯一 ID 計數器
+        let xsdElements = new Map(); // Map storing XSD element definitions / 儲存 XSD 元素定義的 Map
+        let currentParentNode = null; // Current parent node for adding child / 當前要新增子節點的父節點
+        let currentNodeToModify = null; // Current node being edited / 當前正在編輯的節點
         
-        // --- 佈景主題與多語系設定 (同前) ---
+        // --- Theme Configurations (Morandi Palette) / 佈景主題設定 (莫蘭迪色系) ---
+        // Includes background gradients and specific button colors for each theme
+        // 包含每個主題的背景漸層與特定按鈕顏色
         const themes = {
             "default": { start: "#667eea", end: "#764ba2", shadow: "rgba(102, 126, 234, 0.4)", border: "#667eea", btnValS: "#11998e", btnValE: "#38ef7d", btnValShadow: "rgba(56, 239, 125, 0.4)", btnExpS: "#f093fb", btnExpE: "#f5576c", btnExpShadow: "rgba(245, 87, 108, 0.4)", btnClrS: "#ff9a9e", btnClrE: "#fecfef", btnClrShadow: "rgba(255, 154, 158, 0.4)" },
             "morandi-red": { start: "#d6a2a2", end: "#bf7e7e", shadow: "rgba(191, 126, 126, 0.4)", border: "#bf7e7e", btnValS: "#bf7e7e", btnValE: "#a66b6b", btnValShadow: "rgba(166, 107, 107, 0.4)", btnExpS: "#d6a2a2", btnExpE: "#e0b0b0", btnExpShadow: "rgba(214, 162, 162, 0.4)", btnClrS: "#e8d5d5", btnClrE: "#f2e6e6", btnClrShadow: "rgba(232, 213, 213, 0.4)" },
@@ -312,16 +487,20 @@
             "morandi-pink": { start: "#e0babe", end: "#c99399", shadow: "rgba(201, 147, 153, 0.4)", border: "#c99399", btnValS: "#c99399", btnValE: "#b07a81", btnValShadow: "rgba(176, 122, 129, 0.4)", btnExpS: "#e0babe", btnExpE: "#ebd2d5", btnExpShadow: "rgba(224, 186, 190, 0.4)", btnClrS: "#f5e6e8", btnClrE: "#fcf2f3", btnClrShadow: "rgba(245, 230, 232, 0.4)" }
         };
 
+        // Function to apply theme by updating CSS variables / 應用主題的函式（更新 CSS 變數）
         function changeTheme(themeName) {
             const theme = themes[themeName] || themes['default'];
             const root = document.documentElement;
+            // Update background and borders / 更新背景與邊框
             root.style.setProperty('--primary-start', theme.start); root.style.setProperty('--primary-end', theme.end);
             root.style.setProperty('--primary-shadow', theme.shadow); root.style.setProperty('--primary-border', theme.border);
+            // Update buttons / 更新按鈕
             root.style.setProperty('--btn-val-s', theme.btnValS); root.style.setProperty('--btn-val-e', theme.btnValE); root.style.setProperty('--btn-val-shadow', theme.btnValShadow);
             root.style.setProperty('--btn-exp-s', theme.btnExpS); root.style.setProperty('--btn-exp-e', theme.btnExpE); root.style.setProperty('--btn-exp-shadow', theme.btnExpShadow);
             root.style.setProperty('--btn-clr-s', theme.btnClrS); root.style.setProperty('--btn-clr-e', theme.btnClrE); root.style.setProperty('--btn-clr-shadow', theme.btnClrShadow);
         }
 
+        // --- Translation Dictionary / 多語系字典 ---
         const translations = {
             "en": { "app_title": "🔧 XSD-based XML Editor", "app_subtitle": "Load XSD schema, edit and validate your XML documents", "btn_load_xsd": "📁 Load XSD File", "btn_validate": "✓ Validate XML", "btn_export": "💾 Export XML", "btn_clear": "🗑️ Clear All", "panel_xml_editor": "XML Editor", "view_tree": "Tree Editor", "view_source": "XML Source", "msg_load_xsd_first": "Please load XSD file to start editing", "panel_xsd_info": "XSD Schema Info", "msg_no_schema": "No schema loaded", "status_ready": "Ready", "status_nodes": "Nodes: 0", "modal_title_add": "Select Element to Add", "modal_title_edit": "Edit Element", "label_custom_elem": "Selected Element", "label_node_value": "Node Value", "label_attrs": "Attributes (Optional)", "btn_add_attr": "+ Add Attribute", "btn_cancel": "Cancel", "btn_confirm": "Confirm", "hint_enum": "✨ Options loaded from XSD", "hint_date": "📅 Select Date", "hint_datetime": "📅 Select Date & Time", "hint_time": "⏰ Select Time", "ph_attr_name": "Attr Name", "ph_attr_val": "Value", "btn_delete": "Delete", "btn_add_child": "+ Child", "btn_modify": "Edit", "xsd_loaded": "XSD Schema Loaded", "load_fail": "Failed to load XSD: ", "invalid_xsd": "Invalid XSD File", "val_updated": "Value updated", "confirm_del": "Delete this node?", "node_deleted": "Node deleted", "validating": "Validating...", "valid_pass": "✅ XML is valid according to XSD!", "valid_pass_desc": "• All required elements present<br>• Structure matches schema<br>• Attributes are correct", "valid_fail": "❌ XML is invalid", "valid_fail_desc": "<strong>Found issues:</strong>", "root_err": "Root element not defined in schema", "missing_attr": "Missing required attribute", "type_err": "Value mismatch for type", "enum_err": "Value not in allowed options", "missing_child": "Missing required child", "max_occurs_err": "Max occurs exceeded", "invalid_child": "Invalid child element", "no_xml_export": "No XML to export", "xml_exported": "XML Exported", "confirm_clear": "Clear all content?", "cleared": "All content cleared", "schema_elems": "Schema Elements:", "total_defs": "Total definitions", "no_child_defs": "No child elements defined in XSD", "opt_complex": "Complex Type", "opt_select": "-- Select --", "optional_attrs": "Optional Attributes", "err_invalid_name": "Please enter valid element name", "err_invalid_type": "Value does not match type", "theme_default": "Default", "theme_red": "Morandi Red", "theme_yellow": "Morandi Yellow", "theme_blue": "Morandi Blue", "theme_green": "Morandi Green", "theme_pink": "Morandi Pink" },
             "zh-TW": { "app_title": "🔧 XSD-based XML Editor", "app_subtitle": "載入XSD架構，編輯並驗證您的XML文件", "btn_load_xsd": "📁 載入 XSD 檔案", "btn_validate": "✓ 驗證 XML", "btn_export": "💾 匯出 XML", "btn_clear": "🗑️ 清除全部", "panel_xml_editor": "XML 編輯器", "view_tree": "樹狀編輯器", "view_source": "XML 原始碼", "msg_load_xsd_first": "請先載入 XSD 檔案以開始編輯", "panel_xsd_info": "XSD 架構資訊", "msg_no_schema": "尚未載入架構", "status_ready": "就緒", "status_nodes": "節點數: 0", "modal_title_add": "選擇要新增的元素", "modal_title_edit": "修改現有元素", "label_custom_elem": "自訂元素", "label_node_value": "節點值", "label_attrs": "屬性 (選填)", "btn_add_attr": "+ 新增屬性", "btn_cancel": "取消", "btn_confirm": "確認", "hint_enum": "✨ 已從 XSD 載入選項", "hint_date": "📅 請選擇日期", "hint_datetime": "📅 請選擇日期與時間", "hint_time": "⏰ 請選擇時間", "ph_attr_name": "屬性名稱", "ph_attr_val": "屬性值", "btn_delete": "刪除", "btn_add_child": "+ 子節點", "btn_modify": "修改", "xsd_loaded": "XSD 架構載入成功", "load_fail": "載入 XSD 失敗: ", "invalid_xsd": "無效的 XSD 檔案", "val_updated": "節點值已更新", "confirm_del": "確定要刪除此節點嗎？", "node_deleted": "節點已刪除", "validating": "驗證中...", "valid_pass": "✅ XML 文件完全符合 XSD 架構規範！", "valid_pass_desc": "• 所有必要元素都已存在<br>• 元素結構符合架構定義<br>• 屬性設定正確", "valid_fail": "❌ XML 文件不符合 XSD 架構規範", "valid_fail_desc": "<strong>發現以下問題：</strong>", "root_err": "根元素未在架構中定義", "missing_attr": "缺少必要屬性", "type_err": "值不符合類型", "enum_err": "值不在允許的選項中", "missing_child": "缺少必要的子元素", "max_occurs_err": "出現次數超過限制", "invalid_child": "不是有效的子元素", "no_xml_export": "沒有可匯出的 XML 文件", "xml_exported": "XML 已匯出", "confirm_clear": "確定要清除所有內容嗎？", "cleared": "已清除所有內容", "schema_elems": "架構元素:", "total_defs": "總共定義數", "no_child_defs": "此元素沒有在XSD中定義的子元素", "opt_complex": "複合類型", "opt_select": "-- 請選擇 --", "optional_attrs": "可選屬性", "err_invalid_name": "請輸入有效的元素名稱", "err_invalid_type": "值不符合 XSD 類型", "theme_default": "預設主題", "theme_red": "莫蘭迪紅", "theme_yellow": "莫蘭迪黃", "theme_blue": "莫蘭迪藍", "theme_green": "莫蘭迪綠", "theme_pink": "莫蘭迪粉" },
@@ -332,6 +511,7 @@
 
         let currentLang = 'en';
 
+        // Auto-detect browser language / 自動偵測瀏覽器語系
         function initLanguage() {
             const browserLang = navigator.language || navigator.userLanguage;
             if (browserLang.startsWith('zh-TW') || browserLang.startsWith('zh-HK')) currentLang = 'zh-TW';
@@ -344,6 +524,7 @@
             updateInterface();
         }
 
+        // Update interface texts based on selected language / 根據選擇的語言更新介面文字
         function changeLanguage(lang) {
             currentLang = lang;
             updateInterface();
@@ -351,11 +532,12 @@
             if (xsdElements.size > 0) updateSchemaInfo();
         }
 
+        // Helper to get translation / 取得翻譯的輔助函式
         function t(key) { return translations[currentLang][key] || key; }
 
         function updateInterface() {
             document.querySelectorAll('[data-i18n]').forEach(elem => {
-                elem.innerHTML = t(elem.getAttribute('data-i18n')); // Use innerHTML to support <br>
+                elem.innerHTML = t(elem.getAttribute('data-i18n'));
             });
             document.querySelectorAll('.attr-name').forEach(el => el.placeholder = t('ph_attr_name'));
             document.querySelectorAll('.attr-value').forEach(el => el.placeholder = t('ph_attr_val'));
@@ -364,19 +546,24 @@
             if(modalBtn) modalBtn.textContent = t('btn_confirm');
         }
 
+        // Initialize on load / 載入時初始化
         window.addEventListener('DOMContentLoaded', initLanguage);
 
+        // DOM Elements for Source Editor / 原始碼編輯器的 DOM 元素
         const xmlRawInput = document.getElementById('xmlRawInput');
         const xmlHighlight = document.getElementById('xmlHighlight').querySelector('code');
         const lineNumbers = document.getElementById('lineNumbers');
         const xmlEditorContainer = document.getElementById('xmlEditorContainer');
 
+        // Sync syntax highlighting on input / 輸入時同步語法高亮
         xmlRawInput.addEventListener('input', updateSyntaxHighlighting);
+        // Sync scrolling / 同步捲動
         xmlRawInput.addEventListener('scroll', () => {
              xmlEditorContainer.scrollTop = xmlRawInput.scrollTop;
              xmlEditorContainer.scrollLeft = xmlRawInput.scrollLeft;
         });
 
+        // --- File Loading Logic / 檔案讀取邏輯 ---
         document.getElementById('xsdFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -399,6 +586,7 @@
             }
         });
 
+        // --- XSD Parsing Logic (Core) / XSD 解析邏輯 (核心) ---
         function parseXSDSchema() {
             xsdElements.clear();
             const elements = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
@@ -406,16 +594,18 @@
             const simpleTypes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'simpleType');
             const attributes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'attribute');
 
+            // Calculate XPath for an element node / 計算元素節點的 XPath
+            // Traverses up until the schema root / 往上遍歷直到 schema 根節點
             function getElementXPath(elem) {
                 let path = [];
                 let current = elem;
                 while (current) {
                     if (current.localName === 'element') {
                         let name = current.getAttribute('name');
-                        if (!name) name = current.getAttribute('ref');
+                        if (!name) name = current.getAttribute('ref'); // Handle ref / 處理引用
                         
                         if (name) {
-                            if (name.includes(':')) name = name.split(':')[1];
+                            if (name.includes(':')) name = name.split(':')[1]; // Strip prefix / 去除前綴
                             path.unshift(name);
                         }
                     }
@@ -425,6 +615,7 @@
                 return path.length > 0 ? '/' + path.join('/') : '';
             }
 
+            // Extract constraints from simpleType restrictions / 從 simpleType 限制中提取約束條件
             function extractConstraints(typeNode) {
                 const constraints = {};
                 if (!typeNode) return constraints;
@@ -439,6 +630,7 @@
                 return constraints;
             }
 
+            // Extract enumeration values / 提取列舉值
             function getEnumerations(typeNode) {
                 if (!typeNode) return [];
                 const restriction = typeNode.querySelector('restriction');
@@ -447,6 +639,7 @@
                 return Array.from(enumNodes).map(node => node.getAttribute('value'));
             }
 
+            // Parse Complex Type Definitions / 解析複雜類型定義
             function parseComplexType(typeElement) {
                 const children = [];
                 const attrs = [];
@@ -457,6 +650,7 @@
 
                 const simpleContent = typeElement.querySelector('simpleContent');
                 if (simpleContent) {
+                    // Complex Type with Simple Content (e.g., value + attributes)
                     const extension = simpleContent.querySelector('extension');
                     if (extension) {
                         valueType = extension.getAttribute('base');
@@ -471,6 +665,7 @@
                         constraints = extractConstraints(simpleContent);
                     }
                 } else {
+                    // Standard Complex Type (Sequence/Choice/All)
                     const sequence = typeElement.querySelector('sequence');
                     const choice = typeElement.querySelector('choice');
                     const all = typeElement.querySelector('all');
@@ -500,6 +695,7 @@
                 return { hasChildren, valueType, childElements: children, attributes: attrs, enumerations: enumerations, constraints: constraints };
             }
 
+            // Parse Element Definition / 解析元素定義
             function parseElement(elem) {
                 const name = elem.getAttribute('name');
                 const typeAttr = elem.getAttribute('type');
@@ -516,9 +712,10 @@
                     documentation: "",
                     xsdType: null, 
                     xsdTypeName: null,
-                    xpath: getElementXPath(elem) // Updated XPath
+                    xpath: getElementXPath(elem) // Calculate XPath / 計算 XPath
                 };
                 
+                // Extract Documentation / 提取說明文件
                 const annotation = elem.querySelector('annotation');
                 if (annotation) {
                     const docs = annotation.querySelectorAll('documentation');
@@ -530,6 +727,7 @@
                     }
                 }
                 
+                // Handle Named Types (type="...") / 處理具名類型
                 if (typeAttr) {
                     definition.xsdTypeName = typeAttr;
                     const typeDef = xsdDoc.getElementById(typeAttr) || 
@@ -556,6 +754,7 @@
                     }
                 }
                 
+                // Handle Inline Types / 處理行內定義類型
                 const inlineComplexType = elem.querySelector('complexType');
                 const inlineSimpleType = elem.querySelector('simpleType');
 
@@ -575,6 +774,7 @@
                      }
                 }
                 
+                // Fallback for simple elements without explicit type / 無明確類型的簡單元素處理
                 if (!typeAttr && !inlineComplexType && !inlineSimpleType) {
                     const isSimple = !elem.querySelector('element') && !elem.querySelector('sequence') && !elem.querySelector('choice') && !elem.querySelector('all');
                     if (isSimple) {
@@ -587,6 +787,7 @@
                 return definition;
             }
 
+            // Main Loop: Parse all top-level elements / 主迴圈：解析所有頂層元素
             for (let elem of elements) {
                 const name = elem.getAttribute('name');
                 if (name) xsdElements.set(name, parseElement(elem));
@@ -595,6 +796,7 @@
             updateSchemaInfo();
         }
 
+        // Update the Right Panel Info / 更新右側資訊面板
         function updateSchemaInfo() {
             const schemaInfo = document.getElementById('schemaInfo');
             schemaInfo.innerHTML = `
@@ -603,15 +805,18 @@
                     ${Array.from(xsdElements.entries()).map(([name, def]) => {
                         let constraintsHtml = '<div class="constraints-container">';
                         
+                        // Type Badges
                         if (def.xsdType) {
                             const colorClass = def.xsdType === 'ComplexType' ? 'badge-complex' : 'badge-simple';
                             const displayTypeName = def.xsdTypeName && def.xsdTypeName !== '(Anonymous)' ? `: ${def.xsdTypeName}` : '';
                             constraintsHtml += `<span class="constraint-badge ${colorClass}">${def.xsdType}${displayTypeName}</span>`;
                         }
 
+                        // Occurs Badges
                         if(def.minOccurs) constraintsHtml += `<span class="constraint-badge badge-count">min: ${def.minOccurs}</span>`;
                         if(def.maxOccurs) constraintsHtml += `<span class="constraint-badge badge-count">max: ${def.maxOccurs}</span>`;
                         
+                        // Detailed Constraints Badges
                         if(def.constraints) {
                             if(def.constraints.pattern) constraintsHtml += `<span class="constraint-badge badge-pattern">Pattern: ${def.constraints.pattern}</span>`;
                             if(def.constraints.totalDigits) constraintsHtml += `<span class="constraint-badge badge-number">TotalDigits: ${def.constraints.totalDigits}</span>`;
@@ -622,6 +827,7 @@
                             if(def.constraints.maxInclusive) constraintsHtml += `<span class="constraint-badge badge-number">Max: ${def.constraints.maxInclusive}</span>`;
                         }
                         
+                        // XPath Badge
                         if(def.xpath) {
                             constraintsHtml += `<span class="constraint-badge badge-xpath" title="XPath">${def.xpath}</span>`;
                         }
@@ -639,6 +845,7 @@
             `;
         }
 
+        // Initialize minimal XML from XSD / 從 XSD 初始化最小 XML
         function initializeXMLDocument() {
             const rootElements = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
             if (rootElements.length > 0) {
@@ -646,6 +853,7 @@
                 const xmlString = `<?xml version="1.0" encoding="UTF-8"?>\n<${rootName}></${rootName}>`;
                 xmlDoc = new DOMParser().parseFromString(xmlString, 'text/xml');
                 
+                // Handle Namespace / 處理命名空間
                 const targetNamespace = xsdDoc.documentElement.getAttribute('targetNamespace');
                 if (targetNamespace) xmlDoc.documentElement.setAttribute('xmlns', targetNamespace);
                 
@@ -658,6 +866,7 @@
             }
         }
 
+        // Render Tree View (Recursive) / 渲染樹狀視圖 (遞迴)
         function renderXMLTree() {
             const treeView = document.getElementById('treeView');
             treeView.innerHTML = '';
@@ -667,6 +876,7 @@
             }
         }
         
+        // Serialize DOM to String / 將 DOM 序列化為字串
         function getXmlString() {
             if (!xmlDoc) return '';
             const serializer = new XMLSerializer();
@@ -679,10 +889,12 @@
             return formatted.substring(1, formatted.length-3);
         }
 
+        // Update Source View / 更新原始碼視圖
         function updateXmlView() {
             if (xmlDoc) { xmlRawInput.value = getXmlString(); updateSyntaxHighlighting(); }
         }
 
+        // Syntax Highlighting Logic / 語法高亮邏輯
         function updateSyntaxHighlighting() {
             const code = xmlRawInput.value;
             const highlightedCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
@@ -715,6 +927,7 @@
             document.getElementById('showXmlViewBtn').classList.remove('active');
         }
 
+        // Create DOM for a single tree node / 建立單一樹狀節點的 DOM
         function createTreeNode(xmlNode, isRoot = false) {
             const nodeDiv = document.createElement('div');
             nodeDiv.className = isRoot ? 'tree-node root' : 'tree-node';
@@ -796,6 +1009,7 @@
             if (childrenDiv) childrenDiv.classList.toggle('collapsed');
         }
 
+        // Logic to add a child node / 新增子節點邏輯
         function addChildNode(parentXmlNode) {
             if (!xsdDoc) { alert(t('msg_load_xsd_first')); return; }
             currentNodeToModify = null;
@@ -846,6 +1060,7 @@
             modal.classList.add('show');
         }
 
+        // Logic to edit a node / 編輯節點邏輯
         function editNode(xmlNode) {
             if (!xsdDoc) { alert(t('msg_load_xsd_first')); return; }
             currentNodeToModify = xmlNode;
@@ -857,7 +1072,7 @@
             const customElementName = document.getElementById('customElementName');
             const valueInputSection = document.getElementById('valueInputSection');
             
-            // 取得輸入框參考
+            // Get References
             const elementValueInput = document.getElementById('elementValueInput');
             const elementValueSelect = document.getElementById('elementValueSelect');
             const elementValueDate = document.getElementById('elementValueDate');
@@ -885,7 +1100,7 @@
             if (elementDef && elementDef.valueType) {
                 valueInputSection.style.display = 'block';
                 
-                // 隱藏所有輸入框
+                // Reset Display
                 elementValueInput.style.display = 'none';
                 elementValueSelect.style.display = 'none';
                 elementValueDate.style.display = 'none';
@@ -897,7 +1112,7 @@
                 dateTimeHint.style.display = 'none';
                 timeHint.style.display = 'none';
 
-                // --- 輸入介面切換邏輯 ---
+                // Switch Input based on Type
                 // 1. Enumeration
                 if (elementDef.enumerations && elementDef.enumerations.length > 0) {
                     elementValueSelect.style.display = 'block';
@@ -924,7 +1139,7 @@
                     timeHint.style.display = 'block';
                     elementValueTime.value = xmlNode.textContent;
                 }
-                // 5. 一般文字
+                // 5. Default Text
                 else {
                     elementValueInput.style.display = 'block';
                     elementValueInput.value = xmlNode.textContent;
@@ -981,7 +1196,6 @@
             if (elementDef && elementDef.valueType) {
                 valueInputSection.style.display = 'block';
                 
-                // 重置顯示
                 elementValueInput.style.display = 'none';
                 elementValueSelect.style.display = 'none';
                 elementValueDate.style.display = 'none';
@@ -1075,7 +1289,7 @@
             const elementDef = xsdElements.get(newName);
             let newValue = '';
             
-            // 讀取輸入值
+            // Read Input Value
             if (elementDef && elementDef.enumerations && elementDef.enumerations.length > 0) {
                 newValue = document.getElementById('elementValueSelect').value;
             } else if (elementDef && elementDef.valueType === 'xs:date') {
