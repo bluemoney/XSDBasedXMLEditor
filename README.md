@@ -108,6 +108,6 @@ limitations under the License.
 
 ---
 
-## **螢幕截圖 (Screenshots)**
+## 📸 螢幕截圖 (Screenshots)
 
 *![image](https://github.com/bluemoney/XSDBasedXMLEditor/blob/main/screenshot_01.png)*
