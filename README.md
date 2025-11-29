@@ -1,5 +1,3 @@
----
-
 # **🔧 XSD-Based XML Editor**
 
 一個輕量級、純前端的 XML 編輯器，能夠讀取 XSD (XML Schema Definition) 檔案，並根據架構定義動態生成編輯介面。支援即時驗證、樹狀結構編輯、多國語系與主題切換。
