@@ -82,4 +82,4 @@ Copyright (c) 2024 [bluemoney](https://www.google.com/search?q=https://github.co
 
 ### **螢幕截圖 (Screenshots)**
 
-*(您可以在此處上傳專案的截圖，例如編輯畫面、下拉選單或主題切換的效果)*
+*![image](https://github.com/bluemoney/XSDBasedXMLEditor/blob/main/screenshot_01.png)*
