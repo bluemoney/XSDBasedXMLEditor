@@ -59,8 +59,8 @@ A lightweight, purely client-side XML editor that parses XSD (XML Schema Definit
     ```
 
 2.  **執行 (Run)**
-    直接使用瀏覽器 (Chrome, Firefox, Edge, Safari) 開啟 `index.html` 即可。
-    *Simply open `index.html` in your web browser.*
+    直接使用瀏覽器 (Chrome, Firefox, Edge, Safari) 開啟 `xsdView.html` 即可。
+    *Simply open `xsdView.html` in your web browser.*
 
 ---
 
