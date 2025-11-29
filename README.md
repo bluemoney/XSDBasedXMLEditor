@@ -4,7 +4,7 @@
 
 A lightweight, browser-based XML editor that parses XSD files to generate a dynamic editing interface. Features real-time validation, tree-view editing, multi-language support, and theme customization.
 
-🔗 **Project URL:** [https://github.com/bluemoney/XSDBasedXMLEditor](https://www.google.com/search?q=https://github.com/bluemoney/XSDBasedXMLEditor)
+🔗 **Project URL:** [https://github.com/bluemoney/XSDBasedXMLEditor](https://github.com/bluemoney/XSDBasedXMLEditor)
 
 ## **✨ 特色 (Features)**
 
