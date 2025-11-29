@@ -8,7 +8,7 @@ A lightweight, browser-based XML editor that parses XSD files to generate a dyna
 
 🔗 **Project URL:** [https://github.com/bluemoney/XSDBasedXMLEditor](https://www.google.com/search?q=https://github.com/bluemoney/XSDBasedXMLEditor)
 
-## **✨ 特色 (Features)**
+## **✨ 特色 (Features)**##
 
 * **無伺服器架構 (Serverless)**：純 HTML/JS/CSS 實作，無需後端，直接在瀏覽器運行。  
 * **XSD 智能解析 (Smart XSD Parsing)**：  
