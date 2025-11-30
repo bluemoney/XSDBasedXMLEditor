@@ -55,7 +55,7 @@ A lightweight, purely client-side XML editor that parses XSD (XML Schema Definit
 
 1.  **下載專案 (Clone the repository)**
     ```bash
-    git clone [https://github.com/bluemoney/XSDBasedXMLEditor.git](https://github.com/bluemoney/XSDBasedXMLEditor.git)
+    git clone https://github.com/bluemoney/XSDBasedXMLEditor.git
     ```
 
 2.  **執行 (Run)**
