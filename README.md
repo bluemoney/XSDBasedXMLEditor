@@ -37,7 +37,7 @@ A lightweight, purely client-side XML editor that parses XSD (XML Schema Definit
 
 ### 3. 使用者體驗 (User Experience)
 - **多國語系 (Internationalization)**：
-  - 支援繁體中文、简体中文、English、日本語、ภาษาไทย。
+  - 支援繁體中文、简体中文、English、日本語、한국어、Français、Deutsch、ภาษาไทย。
   - 自動偵測瀏覽器語系。(*Auto-detects browser language.*)
 - **佈景主題 (Theming)**：
   - 內建多種 **莫蘭迪色系 (Morandi Colors)** 主題（紅、黃、藍、綠、粉、預設紫）。
@@ -45,6 +45,11 @@ A lightweight, purely client-side XML editor that parses XSD (XML Schema Definit
 - **響應式設計 (Responsive Design)**：
   - 自動適應視窗大小，最大化編輯空間 (95% 寬度)。
   - *Adapts to window size, maximizing editing space (95% width).*
+
+### 4. 鍵盤捷徑 (Keyboard Shortcuts)
+- **Ctrl + S**: 匯出 XML (*Export XML*)
+- **Ctrl + V**: 驗證 XML (*Validate XML*)
+- **Esc**: 關閉彈出視窗 (*Close Modal*)
 
 ---
 
@@ -78,6 +83,7 @@ A lightweight, purely client-side XML editor that parses XSD (XML Schema Definit
 3.  **驗證與匯出 (Validate & Export)**
     - 點擊 **「✓ 驗證 XML」** 檢查文件是否符合規範。(*Click **"✓ Validate XML"** to check compliance.*)
     - 點擊 **「💾 匯出 XML」** 下載編輯完成的檔案。(*Click **"💾 Export XML"** to download the file.*)
+    - 點擊 **「🗑️ 清除所有」** 重置所有內容。(*Click **"🗑️ Clear All"** to reset everything.*)
 
 ---
 
