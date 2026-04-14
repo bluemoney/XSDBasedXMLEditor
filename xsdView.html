@@ -1620,6 +1620,7 @@
         // 初始化 XML 結構 | Initialize minimal XML DOM
         function initializeXMLDocument() {
             const rootElements = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
+            
             if (rootElements.length > 0) {
                 const rootName = rootElements[0].getAttribute('name');
                 const xmlString = `<?xml version="1.0" encoding="UTF-8"?>\n<${rootName}></${rootName}>`;
@@ -2336,7 +2337,7 @@
         }
 
         // ==========================================
-        // 其他系統功能 (匯出、清除、按鍵事件)
+        // 其他系統功能 (匯出、清除、按鍵事件) | Utilities
         // ==========================================
         function exportXML() {
             if (!xmlDoc) { 
@@ -2468,36 +2469,74 @@
         };
 
         // ==========================================
-        // 自動載入預設 XSD 邏輯 | Auto-load Default XSD Logic
+        // 自動載入預設 XSD 與 XML 邏輯 | Auto-load Default XSD & XML Logic
         // ==========================================
+        // 將您的預設 XSD 內容貼入此字串中。
+        // Paste your default XSD content into this string.
         const defaultXSDString = ``; 
+        
+        // 將您的預設 XML 內容貼入此字串中。若設定此值，它將取代自動生成的空 XML。
+        // Paste your default XML content into this string. If set, it overrides the auto-generated blank XML.
+        const defaultXMLString = ``; 
 
-        function loadDefaultXSD() {
+        // 封裝自動載入的執行函式 | Encapsulate the auto-load execution function
+        function loadDefaultXSDAndXML() {
+            // 1. 檢查 defaultXSDString 是否有實際內容 | Check if defaultXSDString has actual content
             if (defaultXSDString && defaultXSDString.trim() !== "") {
                 try {
                     const parser = new DOMParser();
-                    xsdDoc = parser.parseFromString(defaultXSDString, 'text/xml');
                     
+                    // 解析 XSD | Parse XSD
+                    xsdDoc = parser.parseFromString(defaultXSDString, 'text/xml');
                     if (xsdDoc.getElementsByTagName('parsererror').length > 0) {
                         throw new Error(t('invalid_xsd'));
                     }
 
+                    // 執行 XSD 核心解析 | Execute XSD core parsing
                     parseXSDSchema(); 
-                    initializeXMLDocument(); 
                     
+                    // 2. 檢查 defaultXMLString 是否有實際內容 | Check if defaultXMLString has actual content
+                    if (defaultXMLString && defaultXMLString.trim() !== "") {
+                        const xmlParser = new DOMParser();
+                        const tempXmlDoc = xmlParser.parseFromString(defaultXMLString, 'text/xml');
+                        
+                        if (tempXmlDoc.getElementsByTagName('parsererror').length > 0) {
+                            console.error("預設 XML 解析失敗 (Default XML parsing failed).");
+                            // 解析失敗則退回原有的空 XML 生成邏輯 | Fallback to blank XML generation if parsing fails
+                            initializeXMLDocument(); 
+                        } else {
+                            // 解析成功，覆蓋全域變數並進行渲染 | Parsing successful, overwrite global variable and render
+                            xmlDoc = tempXmlDoc;
+                            
+                            // 更新 Namespace 標題 | Update Namespace title
+                            const targetNamespace = xsdDoc.documentElement.getAttribute('targetNamespace');
+                            updatePageTitleAndHeader(targetNamespace);
+                            
+                            renderXMLTree();
+                            updateXmlView(); // 同步更新原始碼檢視 | Synchronize source view
+                            console.log("Default XML loaded successfully.");
+                        }
+                    } else {
+                        // 若沒有預設 XML，則使用原本邏輯建立空的 XML 架構 | If no default XML, use original logic to create a blank XML structure
+                        initializeXMLDocument(); 
+                    }
+                    
+                    // 解除鎖定驗證按鈕，並更新畫面狀態提示 | Unlock the validate button and update the UI status prompt
                     document.getElementById('validateBtn').disabled = false;
                     updateStatus(t('xsd_loaded'));
                     
                     console.log("Default XSD loaded successfully.");
                 } catch (error) {
-                    console.error("Failed to load default XSD:", error);
+                    console.error("Failed to load default XSD/XML:", error);
                     alert(t('load_fail') + error.message);
                 }
             }
         }
 
+        // 將自動載入函式綁定到 DOMContentLoaded 事件 | Bind the auto-load function to the DOMContentLoaded event
+        // 這樣可確保多國語系 (initLanguage) 已經設定完成 | This ensures i18n (initLanguage) is set up
         window.addEventListener('DOMContentLoaded', () => {
-            loadDefaultXSD();
+            loadDefaultXSDAndXML();
         });
     </script>
 </body>
