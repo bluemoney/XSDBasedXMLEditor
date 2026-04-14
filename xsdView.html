@@ -1590,6 +1590,75 @@
             const modal = document.getElementById('elementModal');
             if (event.target === modal) closeElementModal();
         };
+		
+		
+		/**
+		 * Gzip 壓縮與 Base64 轉換工具
+		 * Gzip Compression & Base64 Conversion Utility
+		 */
+		const GzipUtil = {
+		  /**
+		   * 將文字壓縮並轉換為 Base64
+		   * Compress text and convert to Base64
+		   */
+		  async gZipEncode(text) {
+			// 1. 建立壓縮串流 / Create compression stream
+			const stream = new Blob([text]).stream();
+			const compressionStream = new CompressionStream('gzip');
+			const compressedStream = stream.pipeThrough(compressionStream);
+			
+			// 2. 取得二進位數據 / Get binary data
+			const buffer = await new Response(compressedStream).arrayBuffer();
+			const uint8Array = new Uint8Array(buffer);
+
+			// 3. Base64 轉換 (處理相容性) / Base64 conversion (handle compatibility)
+			if (Uint8Array.prototype.toBase64) {
+			  // 現代方案: Chrome 125+, Node.js 22+
+			  // Modern way: using the latest built-in method
+			  return uint8Array.toBase64();
+			} else {
+			  // 舊版方案: 使用 btoa 配合字元轉換
+			  // Legacy way: using btoa with character mapping
+			  let binString = Array.from(uint8Array, (x) => String.fromCharCode(x)).join("");
+			  return btoa(binString);
+			}
+		  },
+
+		  /**
+		   * 將 Base64 解碼並還原文字
+		   * Decode Base64 and decompress to text
+		   */
+		  async decodeUnGZip(base64String) {
+			let uint8Array;
+
+			// 1. Base64 還原為二進位 (處理相容性) / Base64 back to binary (handle compatibility)
+			if (Uint8Array.fromBase64) {
+			  // 現代方案: 效能更優
+			  // Modern way: better performance
+			  uint8Array = Uint8Array.fromBase64(base64String);
+			} else {
+			  // 舊版方案: 使用 atob
+			  // Legacy way: using atob
+			  const binString = atob(base64String);
+			  uint8Array = Uint8Array.from(binString, (m) => m.charCodeAt(0));
+			}
+
+			// 2. 建立解壓縮串流 / Create decompression stream
+			const stream = new ReadableStream({
+			  start(controller) {
+				controller.enqueue(uint8Array);
+				controller.close();
+			  }
+			});
+			const decompressionStream = new DecompressionStream('gzip');
+			const decompressedStream = stream.pipeThrough(decompressionStream);
+
+			// 3. 將串流轉回原始文字 / Convert stream back to original text
+			const response = new Response(decompressedStream);
+			return await response.text();
+		  }
+		};
+
 
         // ==========================================
         // 自動載入預設 XSD 邏輯 | Auto-load Default XSD Logic
