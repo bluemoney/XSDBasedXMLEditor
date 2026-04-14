@@ -4,80 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSD XML Editor (Enum Documentation)</title>
+    <title id="pageTitle">XSD XML Editor</title>
     <style>
-        /* --- CSS Variables Definition (Core Theming Mechanism) --- */
-        /* --- CSS 變數定義 (核心換膚機制) --- */
+        /* =========================================
+           CSS 變數定義區 (Core Theming Mechanism)
+           使用 CSS 變數來達成「動態換膚」的功能。 | Uses CSS variables to achieve "dynamic theming".
+           當在 JS 中切換主題時，只需要修改根元素 (:root) 的這些變數值， | When switching themes in JS, only these variables on the root element (:root) need to be modified,
+           全站的顏色就會跟著連動改變，不需逐一修改 class。 | and the entire site's colors will update automatically without changing individual classes.
+        ========================================= */
         :root {
-            /* Background and Main Colors / 背景與主色調 */
+            /* 背景與主色調 (預設為藍紫色漸層) | Background and main colors (default is a blue-purple gradient) */
             --primary-start: #667eea;
             --primary-end: #764ba2;
             --primary-shadow: rgba(102, 126, 234, 0.4);
             --primary-border: #667eea;
-            --bg-light: #f7f9fc;
+            --bg-light: #f7f9fc; /* 淺色背景，用於區塊內部 | Light background, used inside blocks */
 
-            /* Button Colors: Validate (Primary Action) / 按鈕配色：驗證 (主要行動) */
+            /* 按鈕配色：驗證 (主要行動 - 綠色系) | Button colors: Validate (Primary action - green theme) */
             --btn-val-s: #11998e;
             --btn-val-e: #38ef7d;
             --btn-val-shadow: rgba(56, 239, 125, 0.4);
 
-            /* Button Colors: Export (Secondary Action) / 按鈕配色：匯出 (次要行動) */
+            /* 按鈕配色：匯出 (次要行動 - 暖紅色系) | Button colors: Export (Secondary action - warm red theme) */
             --btn-exp-s: #f093fb;
             --btn-exp-e: #f5576c;
             --btn-exp-shadow: rgba(245, 87, 108, 0.4);
 
-            /* Button Colors: Clear (Tertiary Action) / 按鈕配色：清除 (第三行動) */
+            /* 按鈕配色：清除 (第三行動 - 粉色系) | Button colors: Clear (Tertiary action - pink theme) */
             --btn-clr-s: #ff9a9e;
             --btn-clr-e: #fecfef;
             --btn-clr-shadow: rgba(255, 154, 158, 0.4);
         }
 
-        /* Basic Reset / 基礎樣式重置 */
+        /* 基礎樣式重置 (Reset CSS) - 確保各瀏覽器渲染一致 | Basic style reset - Ensures consistent rendering across browsers */
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box; /* 讓 padding 和 border 包含在元素的設定寬度內 | Includes padding and border in the element's set width */
         }
 
-        /* Body Styles / 網頁主體樣式 */
+        /* 網頁主體樣式 | Body styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Use variables for dynamic theming / 使用變數以實現動態換膚 */
             background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
-            min-height: 100vh;
+            min-height: 100vh; /* 確保背景填滿整個視窗高度 | Ensures background fills the entire viewport height */
             padding: 20px;
-            transition: background 0.5s ease;
-            /* Smooth transition for theme change / 主題切換時的平滑過渡效果 */
+            transition: background 0.5s ease; /* 當主題顏色改變時，提供平滑的過渡動畫 | Smooth transition animation when theme colors change */
             display: flex;
             justify-content: center;
             align-items: flex-start;
         }
 
-        /* Main Container / 主容器 */
+        /* 主容器：包覆整個編輯器的白色卡片 | Main container: The white card wrapping the entire editor */
         .container {
-            width: 95%;
-            /* Responsive width (95% of viewport) / 響應式寬度 (視窗的 95%) */
+            width: 95%; /* 響應式寬度 | Responsive width */
             max-width: 100%;
-            /* Ensure it doesn't exceed parent / 確保不超過父元素 */
-            margin: 0 auto;
-            /* Center alignment / 水平置中 */
-
-            background: rgba(255, 255, 255, 0.95);
-            /* Semi-transparent white bg / 半透明白色背景 */
+            margin: 0 auto; /* 水平置中 | Horizontal centering */
+            background: rgba(255, 255, 255, 0.95); /* 半透明白色背景，透出底圖質感 | Semi-transparent white background revealing the gradient */
             border-radius: 20px;
-            /* Rounded corners / 圓角 */
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            /* Deep shadow for depth / 深色陰影增加層次感 */
-            overflow: hidden;
-            /* Hide overflow content / 隱藏溢出內容 */
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); /* 深色陰影增加立體層次感 | Deep shadow for 3D depth */
+            overflow: hidden; /* 防止子元素溢出圓角 | Prevents child elements from overflowing rounded corners */
             display: flex;
-            flex-direction: column;
-            /* Vertical layout / 垂直排列 */
+            flex-direction: column; /* 內部元素垂直排列 | Vertical arrangement of internal elements */
             min-height: 85vh;
-            /* Minimum height / 最小高度 */
         }
 
-        /* Header Section / 標題區域 */
+        /* 頂部標題區域 | Top header section */
         .header {
             background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
             color: white;
@@ -89,21 +81,40 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* 文字陰影提升可讀性 | Text shadow to improve readability */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        /* Controls Toolbar / 控制工具列 */
+        /* 動態顯示 Namespace 的標籤樣式 | Badge style for dynamically displaying Namespace */
+        .namespace-badge {
+            font-size: 0.45em;
+            opacity: 0.95;
+            font-weight: normal;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: none; /* 預設隱藏，載入後由 JS 顯示 | Hidden by default, shown via JS after loading */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
+        }
+
+        /* 控制工具列 (按鈕、語系、主題選擇) | Control toolbar (buttons, language, theme selection) */
         .controls {
             padding: 20px;
             background: var(--bg-light);
             border-bottom: 2px solid #e0e7ff;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 15px; /* 元件之間的間距 | Spacing between elements */
+            flex-wrap: wrap; /* 畫面太窄時自動換行 | Auto-wrap when the screen is too narrow */
             align-items: center;
         }
 
-        /* File Input Styling (Hidden native input) / 檔案上傳樣式 (隱藏原生輸入框) */
+        /* --- 檔案上傳按鈕樣式美化技巧 | File input styling trick --- */
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
@@ -112,10 +123,9 @@
 
         .file-input-wrapper input[type=file] {
             position: absolute;
-            left: -9999px;
+            left: -9999px; /* 移出可視範圍 | Move out of visible range */
         }
 
-        /* Custom File Input Label / 自訂檔案上傳標籤 */
         .file-input-label {
             background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
             color: white;
@@ -129,10 +139,10 @@
         }
 
         .file-input-label:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px); /* 懸停時些微上浮 | Slight upward lift on hover */
         }
 
-        /* General Button Styles / 通用按鈕樣式 */
+        /* 通用按鈕基礎樣式 | General button base styles */
         .btn {
             color: white;
             border: none;
@@ -150,794 +160,147 @@
 
         .btn:disabled {
             opacity: 0.5;
-            cursor: not-allowed;
+            cursor: not-allowed; /* 禁用狀態的滑鼠游標 | Not-allowed cursor for disabled state */
         }
 
-        /* Themed Buttons (Validate, Export, Clear) / 主題化按鈕 (驗證、匯出、清除) */
-        .btn-validate {
-            background: linear-gradient(135deg, var(--btn-val-s) 0%, var(--btn-val-e) 100%);
-            box-shadow: 0 4px 15px var(--btn-val-shadow);
-        }
+        /* 各自對應變數的主題化按鈕 | Themed buttons corresponding to CSS variables */
+        .btn-validate { background: linear-gradient(135deg, var(--btn-val-s) 0%, var(--btn-val-e) 100%); box-shadow: 0 4px 15px var(--btn-val-shadow); }
+        .btn-export { background: linear-gradient(135deg, var(--btn-exp-s) 0%, var(--btn-exp-e) 100%); box-shadow: 0 4px 15px var(--btn-exp-shadow); }
+        .btn-clear { background: linear-gradient(135deg, var(--btn-clr-s) 0%, var(--btn-clr-e) 100%); box-shadow: 0 4px 15px var(--btn-clr-shadow); }
 
-        .btn-export {
-            background: linear-gradient(135deg, var(--btn-exp-s) 0%, var(--btn-exp-e) 100%);
-            box-shadow: 0 4px 15px var(--btn-exp-shadow);
-        }
+        /* 內容區域佈局 (左右雙欄設計) | Content area layout (two-column design) */
+        .content { display: flex; gap: 20px; padding: 20px; min-height: 600px; flex-grow: 1; }
+        .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; }
+        .panel:first-child { flex: 0 0 calc(65% - 10px); max-width: calc(65% - 10px); }
+        .panel:last-child { flex: 0 0 calc(35% - 10px); max-width: calc(35% - 10px); }
 
-        .btn-clear {
-            background: linear-gradient(135deg, var(--btn-clr-s) 0%, var(--btn-clr-e) 100%);
-            box-shadow: 0 4px 15px var(--btn-clr-shadow);
-        }
-
-        /* Content Layout / 內容區域佈局 */
-        .content {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-            min-height: 600px;
-            flex-grow: 1;
-        }
-
-        /* Panel Styles (Left & Right Columns) / 面板樣式 (左右欄) */
-        .panel {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Left Panel (Editor) - 65% Width / 左側面板 (編輯器) - 佔 65% */
-        .panel:first-child {
-            flex: 0 0 calc(65% - 10px);
-            max-width: calc(65% - 10px);
-        }
-
-        /* Right Panel (Info) - 35% Width / 右側面板 (資訊) - 佔 35% */
-        .panel:last-child {
-            flex: 0 0 calc(35% - 10px);
-            max-width: calc(35% - 10px);
-        }
-
-        /* Responsive Design for Mobile (<768px) / 手機版響應式設計 */
         @media (max-width: 768px) {
-            .content {
-                flex-direction: column;
-            }
-
-            .panel:first-child,
-            .panel:last-child {
-                flex: 1 1 100%;
-                max-width: 100%;
-            }
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary-border);
-        }
-
-        .panel-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0;
-        }
-
-        /* View Toggle Buttons (Tree/Source) / 視圖切換按鈕 (樹狀/原始碼) */
-        .view-toggle-btn {
-            background: #f3f4f6;
-            color: #6b7280;
-            border: 2px solid #e5e7eb;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .view-toggle-btn.active {
-            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
-            color: white;
-            border-color: transparent;
-        }
-
-        /* Tree View Styles / 樹狀圖樣式 */
-        .tree-view {
-            font-family: 'Courier New', monospace;
-            line-height: 1.8;
-            overflow: auto;
-            max-height: 700px;
-            flex-grow: 1;
-        }
-
-        .tree-node {
-            margin-left: 20px;
-            position: relative;
-        }
-
-        /* Indentation per level / 每層縮排 */
-        .tree-node.root {
-            margin-left: 0;
-        }
-
-        .node-header {
-            display: flex;
-            align-items: center;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background 0.2s;
-            cursor: pointer;
-        }
-
-        .node-header:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        /* Expand/Collapse Button / 展開/收合按鈕 */
-        .toggle-btn {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-            cursor: pointer;
-            user-select: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary-start);
-            color: white;
-            border-radius: 3px;
-            font-size: 12px;
-            transition: transform 0.2s;
-        }
-
-        .toggle-btn.collapsed {
-            background: #9ca3af;
-        }
-
-        /* Grey when collapsed / 收合時變灰色 */
-
-        .node-tag {
-            color: #2563eb;
-            font-weight: 600;
-        }
-
-        .node-attribute {
-            color: #dc2626;
-            margin-left: 10px;
-        }
-
-        .node-children {
-            display: block;
-            border-left: 2px solid #e5e7eb;
-            margin-left: 10px;
-            padding-left: 10px;
-        }
-
-        .node-children.collapsed {
-            display: none;
-        }
-
-        /* Inline Edit Input / 行內編輯輸入框 */
-        .edit-input {
-            border: 1px solid var(--primary-border);
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-family: inherit;
-            font-size: inherit;
-            color: #059669;
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Node Action Buttons / 節點操作按鈕 */
-        .add-btn {
-            margin-left: 10px;
-            padding: 2px 8px;
-            background: #10b981;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-
-        .add-btn:hover {
-            background: #059669;
-            transform: scale(1.05);
-        }
-
-        /* Source Code Editor Styles / 原始碼編輯器樣式 */
-        .xml-editor-container {
-            position: relative;
-            height: 700px;
-            overflow: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.8;
-            flex-grow: 1;
-        }
-
-        .line-numbers {
-            float: left;
-            width: 45px;
-            height: 100%;
-            background: #f7f9fc;
-            color: #9ca3af;
-            text-align: right;
-            padding: 10px 10px 10px 0;
-            border-right: 1px solid #e5e7eb;
-            user-select: none;
-        }
-
-        #xmlRawInput {
-            position: absolute;
-            top: 0;
-            left: 45px;
-            width: calc(100% - 45px);
-            height: 100%;
-            border: none;
-            outline: none;
-            resize: none;
-            padding: 10px;
-            background: transparent;
-            color: transparent;
-            caret-color: #333;
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-        }
-
-        #xmlHighlight {
-            padding: 10px;
-            white-space: pre;
-            pointer-events: none;
-        }
-
-        .xml-tag {
-            color: #2563eb;
-        }
-
-        .xml-attr-name {
-            color: #9d174d;
-        }
-
-        .xml-attr-value {
-            color: #dc2626;
-        }
-
-        .xml-content {
-            color: #059669;
-        }
-
-        /* Modal (Popup) Styles / 彈出視窗樣式 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s;
-        }
-
-        .modal.show {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .modal-content {
-            background: white;
-            margin: 5% auto;
-            padding: 0;
-            border-radius: 12px;
-            width: 600px;
-            max-width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.3s;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-            font-size: 1.3em;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
-
-        .close-modal:hover {
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            padding: 20px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        /* Element Option in Modal / Modal 中的元素選項 */
-        .element-option {
-            padding: 12px;
-            margin: 8px 0;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .element-option:hover {
-            border-color: var(--primary-border);
-            background: var(--bg-light);
-            transform: translateX(5px);
-        }
-
-        .element-option.selected {
-            border-color: var(--primary-border);
-            background: var(--bg-light);
-        }
-
-        .element-name {
-            font-weight: 600;
-            color: #2563eb;
-            font-size: 1.1em;
-        }
-
-        .element-type {
-            font-size: 0.9em;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-
-        .element-constraints {
-            font-size: 0.85em;
-            color: #9ca3af;
-            margin-top: 4px;
-        }
-
-        .modal-footer {
-            padding: 15px 20px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .modal-btn.primary {
-            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
-            color: white;
-        }
-
-        .modal-btn.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--primary-shadow);
-        }
-
-        .modal-btn.secondary {
-            background: #f3f4f6;
-            color: #6b7280;
-        }
-
-        .modal-btn.secondary:hover {
-            background: #e5e7eb;
-        }
-
-        .custom-input-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #e5e7eb;
-        }
-
-        .custom-input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 1em;
-            transition: border-color 0.2s;
-        }
-
-        .custom-input:focus {
-            outline: none;
-            border-color: var(--primary-border);
-        }
-
-        /* Custom select arrow / 自訂下拉選單箭頭 */
-        select.custom-input {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 1em;
-            cursor: pointer;
-        }
-
-        .attribute-input-group {
-            margin-top: 15px;
-            padding: 10px;
-            background: #f9fafb;
-            border-radius: 6px;
-        }
-
-        .attribute-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .attribute-row input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-        }
-
-        .attribute-row input:focus {
-            border-color: var(--primary-border);
-            outline: none;
-        }
-
-        .delete-btn {
-            margin-left: 10px;
-            padding: 2px 8px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-
-        .validation-result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: 500;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .validation-result.valid {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
-            border: 2px solid #10b981;
-            color: #059669;
-        }
-
-        .validation-result.invalid {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
-            border: 2px solid #ef4444;
-            color: #dc2626;
-        }
-
-        .status-bar {
-            background: #f3f4f6;
-            padding: 10px 20px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f4f6;
-            border-top: 3px solid var(--primary-start);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .edit-btn {
-            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-        }
-
-        .attribute-option {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #e5e7eb;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-block;
-            transition: all 0.2s;
-            background: #f9fafb;
-            font-size: 0.9em;
-        }
-
-        .attribute-option:hover {
-            background: var(--bg-light);
-            border-color: var(--primary-border);
-        }
-
-        .attribute-option.required {
-            font-weight: bold;
-            color: #dc2626;
-        }
-
-        .value-input-section {
-            margin-top: 20px;
-        }
-
-        /* Select Box Styles / 選單樣式 */
-        .select-box {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #e0e7ff;
-            background: white;
-            color: #555;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: border-color 0.3s;
-        }
-
-        .select-box:hover {
-            border-color: var(--primary-border);
-        }
-
-        /* Footer Styles / 頁尾樣式 */
-        .footer {
-            background: #f8fafc;
-            padding: 15px;
-            text-align: center;
-            font-size: 13px;
-            color: #64748b;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .footer-link {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--primary-start);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--primary-end);
-            text-decoration: underline;
-        }
-
-        .separator {
-            color: #cbd5e1;
-        }
-
-        /* --- Constraint & XPath Badge Styles / 限制條件與 XPath 標籤樣式 --- */
-        .constraints-container {
-            margin-top: 5px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-left: 24px;
-        }
-
-        .constraint-badge {
-            font-size: 0.75em;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Consolas', monospace;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .badge-count {
-            background: #e0f2fe;
-            color: #0284c7;
-            border: 1px solid #bae6fd;
-        }
-
-        .badge-pattern {
-            background: #f3e8ff;
-            color: #9333ea;
-            border: 1px solid #e9d5ff;
-        }
-
-        .badge-number {
-            background: #ffedd5;
-            color: #ea580c;
-            border: 1px solid #fed7aa;
-        }
-
-        .badge-length {
-            background: #dcfce7;
-            color: #16a34a;
-            border: 1px solid #bbf7d0;
-        }
-
-        .badge-complex {
-            background: #e2e8f0;
-            color: #475569;
-            border: 1px solid #cbd5e1;
-            font-weight: bold;
-        }
-
-        .badge-simple {
-            background: #f0fdf4;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
-            font-weight: bold;
-        }
-
-        /* XPath Badge (Dark style) / XPath 標籤 (深色風格) */
-        .badge-xpath {
-            background: #2d3748;
-            color: #e2e8f0;
-            border: 1px solid #1a202c;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.8em;
-            width: 100%;
-            display: block;
-            margin-top: 6px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .badge-xpath:before {
-            content: "XPath: ";
-            color: #718096;
-            margin-right: 5px;
-            font-weight: normal;
-        }
-
-        /* Back to Top Button / 回到頂部按鈕 */
-        .back-to-top {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            display: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
-            color: white;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            font-size: 24px;
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s, opacity 0.3s;
-            opacity: 0;
-        }
-
-        .back-to-top.visible {
-            display: flex;
-            opacity: 1;
-        }
-
-        .back-to-top:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Search Input / 搜尋輸入框 */
-        .search-bar-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-        }
-
-        .search-input {
-            flex-grow: 1;
-            padding: 8px 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 0.95em;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--primary-border);
-            box-shadow: 0 0 0 2px var(--bg-light);
-        }
+            .content { flex-direction: column; }
+            .panel:first-child, .panel:last-child { flex: 1 1 100%; max-width: 100%; }
+        }
+
+        .panel-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid var(--primary-border); }
+        .panel-title { font-size: 1.3em; font-weight: 600; color: #333; margin-bottom: 0; }
+
+        /* 視圖切換按鈕 (樹狀/原始碼) | View toggle buttons (Tree/Source) */
+        .view-toggle-btn { background: #f3f4f6; color: #6b7280; border: 2px solid #e5e7eb; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+        .view-toggle-btn.active { background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%); color: white; border-color: transparent; }
+
+        /* --- 樹狀圖編輯器樣式 | Tree view editor styles --- */
+        .tree-view { font-family: 'Courier New', monospace; line-height: 1.8; overflow: auto; max-height: 700px; flex-grow: 1; }
+        .tree-node { margin-left: 20px; position: relative; }
+        .tree-node.root { margin-left: 0; }
+        .node-header { display: flex; align-items: center; padding: 5px; border-radius: 5px; transition: background 0.2s; cursor: pointer; }
+        .node-header:hover { background: rgba(0, 0, 0, 0.05); }
+        .toggle-btn { width: 20px; height: 20px; margin-right: 8px; cursor: pointer; user-select: none; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-start); color: white; border-radius: 3px; font-size: 12px; transition: transform 0.2s; }
+        .toggle-btn.collapsed { background: #9ca3af; }
+        .node-tag { color: #2563eb; font-weight: 600; }
+        .node-attribute { color: #dc2626; margin-left: 10px; }
+        .node-children { display: block; border-left: 2px solid #e5e7eb; margin-left: 10px; padding-left: 10px; }
+        .node-children.collapsed { display: none; }
+        .add-btn { margin-left: 10px; padding: 2px 8px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+        .add-btn:hover { background: #059669; transform: scale(1.05); }
+        .edit-btn { background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); }
+        .delete-btn { margin-left: 10px; padding: 2px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+
+        /* --- 原始碼編輯器樣式 (模擬簡易 IDE) | Source code editor styles (Simulating a simple IDE) --- */
+        .xml-editor-container { position: relative; height: 700px; overflow: auto; border: 1px solid #e5e7eb; border-radius: 8px; margin-top: 15px; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.8; flex-grow: 1; }
+        .line-numbers { float: left; width: 45px; height: 100%; background: #f7f9fc; color: #9ca3af; text-align: right; padding: 10px 10px 10px 0; border-right: 1px solid #e5e7eb; user-select: none; }
+        #xmlRawInput { position: absolute; top: 0; left: 45px; width: calc(100% - 45px); height: 100%; border: none; outline: none; resize: none; padding: 10px; background: transparent; color: transparent; caret-color: #333; font-family: inherit; font-size: inherit; line-height: inherit; }
+        #xmlHighlight { padding: 10px; white-space: pre; pointer-events: none; }
+        .xml-tag { color: #2563eb; } .xml-attr-name { color: #9d174d; } .xml-attr-value { color: #dc2626; } .xml-content { color: #059669; }
+
+        /* --- 彈出視窗 (Modal) 樣式 | Modal styles --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); animation: fadeIn 0.3s; }
+        .modal.show { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content { background: white; margin: 5% auto; padding: 0; border-radius: 12px; width: 600px; max-width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideDown 0.3s; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; font-size: 1.3em; }
+        .close-modal { background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+        .close-modal:hover { transform: rotate(90deg); }
+        .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+        .element-option { padding: 12px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: white; }
+        .element-option:hover { border-color: var(--primary-border); background: var(--bg-light); transform: translateX(5px); }
+        .element-option.selected { border-color: var(--primary-border); background: var(--bg-light); }
+        .element-name { font-weight: 600; color: #2563eb; font-size: 1.1em; }
+        .element-type { font-size: 0.9em; color: #6b7280; margin-top: 4px; }
+        .element-constraints { font-size: 0.85em; color: #9ca3af; margin-top: 4px; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid #e5e7eb; display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .modal-btn.primary { background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%); color: white; }
+        .modal-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px var(--primary-shadow); }
+        .modal-btn.secondary { background: #f3f4f6; color: #6b7280; }
+        .modal-btn.secondary:hover { background: #e5e7eb; }
+
+        /* 自訂輸入區塊 | Custom input block */
+        .custom-input-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #e5e7eb; }
+        .custom-input { width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 6px; font-size: 1em; transition: border-color 0.2s; }
+        .custom-input:focus { outline: none; border-color: var(--primary-border); }
+        select.custom-input { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 1em; cursor: pointer; }
+        .attribute-input-group { margin-top: 15px; padding: 10px; background: #f9fafb; border-radius: 6px; }
+        .attribute-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .attribute-row input { flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; }
+        .attribute-row input:focus { border-color: var(--primary-border); outline: none; }
+
+        /* --- 驗證結果顯示區塊 | Validation result display block --- */
+        .validation-result { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: 500; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .validation-result.valid { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%); border: 2px solid #10b981; color: #059669; }
+        .validation-result.invalid { background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%); border: 2px solid #ef4444; color: #dc2626; }
+
+        /* 狀態列 (底部準備就緒/節點數) | Status bar (Bottom ready status / node count) */
+        .status-bar { background: #f3f4f6; padding: 10px 20px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #6b7280; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f4f6; border-top: 3px solid var(--primary-start); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 屬性選項標籤 | Attribute option tags */
+        .attribute-option { padding: 8px; margin: 5px; border: 1px solid #e5e7eb; border-radius: 5px; cursor: pointer; display: inline-block; transition: all 0.2s; background: #f9fafb; font-size: 0.9em; }
+        .attribute-option:hover { background: var(--bg-light); border-color: var(--primary-border); }
+        .attribute-option.required { font-weight: bold; color: #dc2626; }
+        .value-input-section { margin-top: 20px; }
+
+        /* 一般下拉選單樣式 (語系、主題) | General select dropdown styles (Language, Theme) */
+        .select-box { padding: 12px; border-radius: 8px; border: 1px solid #e0e7ff; background: white; color: #555; font-weight: 600; cursor: pointer; outline: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: border-color 0.3s; }
+        .select-box:hover { border-color: var(--primary-border); }
+
+        /* 頁尾版權/連結區塊 | Footer copyright/links block */
+        .footer { background: #f8fafc; padding: 15px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0; display: flex; justify-content: center; gap: 15px; align-items: center; }
+        .footer-link { display: flex; align-items: center; gap: 6px; color: var(--primary-start); text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        .footer-link:hover { color: var(--primary-end); text-decoration: underline; }
+        .separator { color: #cbd5e1; }
+
+        /* --- XSD 限制條件與 XPath 標籤樣式 (Badge Styles) | XSD Constraints and XPath Badge Styles --- */
+        .constraints-container { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 5px; margin-left: 24px; }
+        .constraint-badge { font-size: 0.75em; padding: 2px 6px; border-radius: 4px; font-family: 'Consolas', monospace; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-count { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+        .badge-pattern { background: #f3e8ff; color: #9333ea; border: 1px solid #e9d5ff; }
+        .badge-number { background: #ffedd5; color: #ea580c; border: 1px solid #fed7aa; }
+        .badge-length { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-complex { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; font-weight: bold; }
+        .badge-simple { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-weight: bold; }
+        .badge-xpath { background: #2d3748; color: #e2e8f0; border: 1px solid #1a202c; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.8em; width: 100%; display: block; margin-top: 6px; padding: 6px 10px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .badge-xpath:before { content: "XPath: "; color: #718096; margin-right: 5px; font-weight: normal; }
+
+        /* 回到頂部按鈕 (Floating Action Button) | Back to Top Button (Floating Action Button) */
+        .back-to-top { position: fixed; bottom: 40px; right: 40px; display: none; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); color: white; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); cursor: pointer; font-size: 24px; z-index: 9999; align-items: center; justify-content: center; transition: transform 0.3s, opacity 0.3s; opacity: 0; }
+        .back-to-top.visible { display: flex; opacity: 1; }
+        .back-to-top:hover { transform: translateY(-5px); }
+        .search-bar-container { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; width: 100%; }
+        .search-input { flex-grow: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.95em; outline: none; transition: all 0.2s; }
+        .search-input:focus { border-color: var(--primary-border); box-shadow: 0 0 0 2px var(--bg-light); }
     </style>
 </head>
 
 <body>
     <div class="container">
+        
         <div class="header">
-            <h1 data-i18n="app_title">🔧 XSD-based XML Editor</h1>
+            <h1>
+                <span data-i18n="app_title">🔧 XSD-based XML Editor</span>
+                <span id="headerNamespace" class="namespace-badge"></span>
+            </h1>
             <p data-i18n="app_subtitle">載入XSD架構，編輯並驗證您的XML文件</p>
         </div>
 
@@ -984,10 +347,12 @@
                             data-i18n="view_source">XML 原始碼</button>
                     </div>
                 </div>
+                
                 <div id="treeView" class="tree-view" style="margin-top: 15px;">
                     <p style="color: #9ca3af; text-align: center; padding: 50px;" data-i18n="msg_load_xsd_first">請先載入
                         XSD 檔案以開始編輯</p>
                 </div>
+                
                 <div id="xmlEditorContainer" class="xml-editor-container" style="display: none;">
                     <div class="line-numbers" id="lineNumbers">1</div>
                     <div style="margin-left: 45px; position: relative;">
@@ -1081,15 +446,17 @@
     </div>
 
     <script>
-        // --- Global State Variables / 全域狀態變數 ---
-        let xsdDoc = null;          // Parsed XSD Document Object / 解析後的 XSD 文件物件
-        let xmlDoc = null;          // XML Document being edited / 正在編輯的 XML 文件
-        let nodeIdCounter = 0;      // Unique ID counter for nodes / 節點唯一 ID 計數器
-        let xsdElements = new Map(); // Map of Element Definitions / 元素定義對映表
-        let currentParentNode = null; // Context for adding child / 新增子節點時的父節點上下文
-        let currentNodeToModify = null; // Context for editing node / 正在編輯的節點上下文
+        // --- Global State Variables / 全域狀態變數 | Global State Variables ---
+        // 這些變數負責管理整個應用的生命週期狀態 | These variables manage the lifecycle state of the entire application
+        let xsdDoc = null;          // Parsed XSD Document Object / 儲存解析後的 XSD 文件 (DOM 物件) | Stores the parsed XSD document (DOM object)
+        let xmlDoc = null;          // XML Document being edited / 儲存正在編輯的 XML 文件 (DOM 物件) | Stores the XML document being edited (DOM object)
+        let nodeIdCounter = 0;      // Unique ID counter for nodes / 用來給前端顯示的 Tree 節點分配唯一 ID 的計數器 | Counter for assigning unique IDs to Tree nodes displayed on the frontend
+        let xsdElements = new Map(); // Map of Element Definitions / 核心字典：將解析出來的 XSD 元素名稱對應到其完整定義物件 | Core dictionary: Maps parsed XSD element names to their complete definition objects
+        let currentParentNode = null; // Context for adding child / 狀態標記：新增子節點時，記住當下點擊的父節點 | State marker: Remembers the clicked parent node when adding a child node
+        let currentNodeToModify = null; // Context for editing node / 狀態標記：編輯節點時，記住當下要修改的節點 | State marker: Remembers the current node to be modified when editing
 
-        // --- Theme Configuration (Morandi Palette) / 主題設定 (莫蘭迪色系) ---
+        // --- Theme Configuration (Morandi Palette) / 主題設定 (莫蘭迪色系字典) | Theme Configuration (Morandi Palette Dictionary) ---
+        // 定義每一種主題所對應的 CSS 變數值 | Defines the CSS variable values corresponding to each theme
         const themes = {
             "default": { start: "#667eea", end: "#764ba2", shadow: "rgba(102, 126, 234, 0.4)", border: "#667eea", btnValS: "#11998e", btnValE: "#38ef7d", btnValShadow: "rgba(56, 239, 125, 0.4)", btnExpS: "#f093fb", btnExpE: "#f5576c", btnExpShadow: "rgba(245, 87, 108, 0.4)", btnClrS: "#ff9a9e", btnClrE: "#fecfef", btnClrShadow: "rgba(255, 154, 158, 0.4)" },
             "morandi-red": { start: "#d6a2a2", end: "#bf7e7e", shadow: "rgba(191, 126, 126, 0.4)", border: "#bf7e7e", btnValS: "#bf7e7e", btnValE: "#a66b6b", btnValShadow: "rgba(166, 107, 107, 0.4)", btnExpS: "#d6a2a2", btnExpE: "#e0b0b0", btnExpShadow: "rgba(214, 162, 162, 0.4)", btnClrS: "#e8d5d5", btnClrE: "#f2e6e6", btnClrShadow: "rgba(232, 213, 213, 0.4)" },
@@ -1099,7 +466,7 @@
             "morandi-pink": { start: "#e0babe", end: "#c99399", shadow: "rgba(201, 147, 153, 0.4)", border: "#c99399", btnValS: "#c99399", btnValE: "#b07a81", btnValShadow: "rgba(176, 122, 129, 0.4)", btnExpS: "#e0babe", btnExpE: "#ebd2d5", btnExpShadow: "rgba(224, 186, 190, 0.4)", btnClrS: "#f5e6e8", btnClrE: "#fcf2f3", btnClrShadow: "rgba(245, 230, 232, 0.4)" }
         };
 
-        // Function to apply theme / 應用主題函式
+        // 應用主題函式：透過修改 root 上的 CSS 變數，達成全域換色 | Apply theme function: Achieves global color change by modifying CSS variables on root
         function changeTheme(themeName) {
             const theme = themes[themeName] || themes['default'];
             const root = document.documentElement;
@@ -1110,7 +477,7 @@
             root.style.setProperty('--btn-clr-s', theme.btnClrS); root.style.setProperty('--btn-clr-e', theme.btnClrE); root.style.setProperty('--btn-clr-shadow', theme.btnClrShadow);
         }
 
-        // --- Internationalization (i18n) / 多國語系 ---
+        // --- Internationalization (i18n) / 多國語系字串對應表 | Internationalization (i18n) String Dictionary ---
         const translations = {
             "en": { "app_title": "🔧 XSD-based XML Editor", "app_subtitle": "Load XSD schema, edit and validate your XML documents", "btn_load_xsd": "📁 Load XSD File", "btn_validate": "✓ Validate XML", "btn_export": "💾 Export XML", "btn_clear": "🗑️ Clear All", "panel_xml_editor": "XML Editor", "view_tree": "Tree Editor", "view_source": "XML Source", "msg_load_xsd_first": "Please load XSD file to start editing", "panel_xsd_info": "XSD Schema Info", "msg_no_schema": "No schema loaded", "status_ready": "Ready", "status_nodes": "Nodes: 0", "modal_title_add": "Select Element to Add", "modal_title_edit": "Edit Element", "label_custom_elem": "Selected Element", "label_node_value": "Node Value", "label_attrs": "Attributes (Optional)", "btn_add_attr": "+ Add Attribute", "btn_cancel": "Cancel", "btn_confirm": "Confirm", "hint_enum": "✨ Options loaded from XSD", "hint_date": "📅 Select Date", "hint_datetime": "📅 Select Date & Time", "hint_time": "⏰ Select Time", "ph_attr_name": "Attr Name", "ph_attr_val": "Value", "btn_delete": "Delete", "btn_add_child": "+ Child", "btn_modify": "Edit", "xsd_loaded": "XSD Schema Loaded", "load_fail": "Failed to load XSD: ", "invalid_xsd": "Invalid XSD File", "val_updated": "Value updated", "confirm_del": "Delete this node?", "node_deleted": "Node deleted", "validating": "Validating...", "valid_pass": "✅ XML is valid according to XSD!", "valid_pass_desc": "• All required elements present<br>• Structure matches schema<br>• Attributes are correct", "valid_fail": "❌ XML is invalid", "valid_fail_desc": "<strong>Found issues:</strong>", "root_err": "Root element not defined in schema", "missing_attr": "Missing required attribute", "type_err": "Value mismatch for type", "enum_err": "Value not in allowed options", "missing_child": "Missing required child", "max_occurs_err": "Max occurs exceeded", "invalid_child": "Invalid child element", "no_xml_export": "No XML to export", "xml_exported": "XML Exported", "confirm_clear": "Clear all content?", "cleared": "All content cleared", "schema_elems": "Schema Elements:", "total_defs": "Total definitions", "no_child_defs": "No child elements defined in XSD", "opt_complex": "Complex Type", "opt_select": "-- Select --", "optional_attrs": "Optional Attributes", "err_invalid_name": "Please enter valid element name", "err_invalid_type": "Value does not match type", "theme_default": "Default", "theme_red": "Morandi Red", "theme_yellow": "Morandi Yellow", "theme_blue": "Morandi Blue", "theme_green": "Morandi Green", "theme_pink": "Morandi Pink", "ph_search_xpath": "🔍 Filter by XPath or Name..." },
             "zh-TW": { "app_title": "🔧 XSD-based XML Editor", "app_subtitle": "載入XSD架構，編輯並驗證您的XML文件", "btn_load_xsd": "📁 載入 XSD 檔案", "btn_validate": "✓ 驗證 XML", "btn_export": "💾 匯出 XML", "btn_clear": "🗑️ 清除全部", "panel_xml_editor": "XML 編輯器", "view_tree": "樹狀編輯器", "view_source": "XML 原始碼", "msg_load_xsd_first": "請先載入 XSD 檔案以開始編輯", "panel_xsd_info": "XSD 架構資訊", "msg_no_schema": "尚未載入架構", "status_ready": "就緒", "status_nodes": "節點數: 0", "modal_title_add": "選擇要新增的元素", "modal_title_edit": "修改現有元素", "label_custom_elem": "自訂元素", "label_node_value": "節點值", "label_attrs": "屬性 (選填)", "btn_add_attr": "+ 新增屬性", "btn_cancel": "取消", "btn_confirm": "確認", "hint_enum": "✨ 已從 XSD 載入選項", "hint_date": "📅 請選擇日期", "hint_datetime": "📅 請選擇日期與時間", "hint_time": "⏰ 請選擇時間", "ph_attr_name": "屬性名稱", "ph_attr_val": "屬性值", "btn_delete": "刪除", "btn_add_child": "+ 子節點", "btn_modify": "修改", "xsd_loaded": "XSD 架構載入成功", "load_fail": "載入 XSD 失敗: ", "invalid_xsd": "無效的 XSD 檔案", "val_updated": "節點值已更新", "confirm_del": "確定要刪除此節點嗎？", "node_deleted": "節點已刪除", "validating": "驗證中...", "valid_pass": "✅ XML 文件完全符合 XSD 架構規範！", "valid_pass_desc": "• 所有必要元素都已存在<br>• 元素結構符合架構定義<br>• 屬性設定正確", "valid_fail": "❌ XML 文件不符合 XSD 架構規範", "valid_fail_desc": "<strong>發現以下問題：</strong>", "root_err": "根元素未在架構中定義", "missing_attr": "缺少必要屬性", "type_err": "值不符合類型", "enum_err": "值不在允許的選項中", "missing_child": "缺少必要的子元素", "max_occurs_err": "出現次數超過限制", "invalid_child": "不是有效的子元素", "no_xml_export": "沒有可匯出的 XML 文件", "xml_exported": "XML 已匯出", "confirm_clear": "確定要清除所有內容嗎？", "cleared": "已清除所有內容", "schema_elems": "架構元素:", "total_defs": "總共定義數", "no_child_defs": "此元素沒有在XSD中定義的子元素", "opt_complex": "複合類型", "opt_select": "-- 請選擇 --", "optional_attrs": "可選屬性", "err_invalid_name": "請輸入有效的元素名稱", "err_invalid_type": "值不符合 XSD 類型", "theme_default": "預設主題", "theme_red": "莫蘭迪紅", "theme_yellow": "莫蘭迪黃", "theme_blue": "莫蘭迪藍", "theme_green": "莫蘭迪綠", "theme_pink": "莫蘭迪粉", "ph_search_xpath": "🔍 搜尋 XPath 或名稱..." },
@@ -1124,7 +491,7 @@
 
         let currentLang = 'en';
 
-        // Auto-detect browser language / 自動偵測瀏覽器語系
+        // 自動偵測瀏覽器語系並設定初始語言 | Auto-detect browser language and set initial language
         function initLanguage() {
             const browserLang = navigator.language || navigator.userLanguage;
             if (browserLang.startsWith('zh-TW') || browserLang.startsWith('zh-HK')) currentLang = 'zh-TW';
@@ -1140,50 +507,71 @@
             updateInterface();
         }
 
-        // Update interface texts based on selected language / 根據選擇的語言更新介面文字
+        // 切換介面語言，並重新渲染已有的資料結構 | Switch interface language and re-render existing data structures
         function changeLanguage(lang) {
             currentLang = lang;
             updateInterface();
-            if (xmlDoc) renderXMLTree();
-            if (xsdElements.size > 0) updateSchemaInfo();
+            if (xmlDoc) renderXMLTree(); // 重新渲染 Tree (按鈕的語言會更新) | Re-render Tree (button language will update)
+            if (xsdElements.size > 0) updateSchemaInfo(); // 重新渲染右側資訊 | Re-render right panel info
         }
 
-        // Helper to get translation / 取得翻譯的輔助函式
-        function t(key) { return translations[currentLang][key] || key; }
+        // 取得翻譯字串的輔助函式 | Helper function to get translated strings
+        function t(key) { return translations[currentLang]?.[key] || translations['en']?.[key] || key; }
 
+        // 走訪所有擁有 data-i18n 屬性的元素並替換內容 | Traverse all elements with data-i18n attribute and replace their content
         function updateInterface() {
             document.querySelectorAll('[data-i18n]').forEach(elem => {
                 elem.innerHTML = t(elem.getAttribute('data-i18n'));
             });
+            // 手動更新 Placeholder | Manually update Placeholders
             document.querySelectorAll('.attr-name').forEach(el => el.placeholder = t('ph_attr_name'));
             document.querySelectorAll('.attr-value').forEach(el => el.placeholder = t('ph_attr_val'));
             document.getElementById('elementValueInput').placeholder = t('label_node_value');
             const modalBtn = document.querySelector('.modal-btn.primary');
             if (modalBtn) modalBtn.textContent = t('btn_confirm');
 
-            // Update placeholder for search input
             const searchInput = document.getElementById('xpathSearch');
             if (searchInput) searchInput.placeholder = t('ph_search_xpath');
         }
 
-        // Initialize on load / 載入時初始化
         window.addEventListener('DOMContentLoaded', initLanguage);
 
-        // DOM Elements for Source Editor / 原始碼編輯器的 DOM 元素
+        // --- 動態更新網頁標題與 Title | Dynamically Update Page Title and Header ---
+        // 將 XSD 中擷取到的 Namespace 加到標題中 | Append extracted Namespace from XSD to the titles
+        function updatePageTitleAndHeader(namespace) {
+            const baseTitle = "XSD XML Editor";
+            const headerNsSpan = document.getElementById('headerNamespace');
+            
+            if (namespace && namespace.trim() !== "") {
+                // 更新網頁 <title> | Update page <title>
+                document.title = `${baseTitle} - [${namespace}]`;
+                // 更新 <h1> 旁邊的標籤 | Update the badge next to <h1>
+                headerNsSpan.textContent = `[ ${namespace} ]`;
+                headerNsSpan.style.display = 'inline-block';
+            } else {
+                // 如果沒有 Namespace 或已清除，則還原 | Revert if no Namespace or cleared
+                document.title = baseTitle;
+                headerNsSpan.style.display = 'none';
+                headerNsSpan.textContent = '';
+            }
+        }
+
+        // --- 原始碼編輯器的 DOM 元素與邏輯 | DOM elements and logic for the Source Editor ---
         const xmlRawInput = document.getElementById('xmlRawInput');
         const xmlHighlight = document.getElementById('xmlHighlight').querySelector('code');
         const lineNumbers = document.getElementById('lineNumbers');
         const xmlEditorContainer = document.getElementById('xmlEditorContainer');
 
-        // Sync syntax highlighting on input / 輸入時同步語法高亮
+        // 當在 textaera 輸入時，同步觸發正則高亮顯示 | Trigger regex highlighting synchronously when typing in textarea
         xmlRawInput.addEventListener('input', updateSyntaxHighlighting);
-        // Sync scrolling / 同步捲動
+        // 同步捲動：確保隱藏的 textarea 與顯示高亮的 pre 元素滾動位置永遠一致 | Synchronous scrolling: Ensures the hidden textarea and highlighted pre element scroll positions are always aligned
         xmlRawInput.addEventListener('scroll', () => {
             xmlEditorContainer.scrollTop = xmlRawInput.scrollTop;
             xmlEditorContainer.scrollLeft = xmlRawInput.scrollLeft;
         });
 
-        // --- File Loading Logic / 檔案讀取邏輯 ---
+        // --- File Loading Logic / XSD 檔案讀取邏輯 | File Loading Logic / XSD File Reading Logic ---
+        // 使用 HTML5 FileReader API 來讀取本地檔案內容 | Use HTML5 FileReader API to read local file content
         document.getElementById('xsdFile').addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
@@ -1191,11 +579,12 @@
                 reader.onload = function (e) {
                     try {
                         const parser = new DOMParser();
+                        // 將讀取到的純文字解析成 XML DOM 物件 | Parse the read plain text into an XML DOM object
                         xsdDoc = parser.parseFromString(e.target.result, 'text/xml');
                         if (xsdDoc.getElementsByTagName('parsererror').length > 0) throw new Error(t('invalid_xsd'));
 
-                        parseXSDSchema();
-                        initializeXMLDocument();
+                        parseXSDSchema(); // 進行核心解析 | Perform core parsing
+                        initializeXMLDocument(); // 產生初始 XML 架構 | Generate initial XML structure
                         document.getElementById('validateBtn').disabled = false;
                         updateStatus(t('xsd_loaded'));
                     } catch (error) {
@@ -1206,26 +595,29 @@
             }
         });
 
-        // --- XSD Parsing Logic (Core) / XSD 解析邏輯 (核心) ---
+        // --- XSD Parsing Logic (Core) / XSD 解析邏輯 (核心演算法) | XSD Parsing Logic (Core Algorithm) ---
         function parseXSDSchema() {
-            xsdElements.clear();
+            xsdElements.clear(); // 清空舊資料 | Clear old data
+            
+            // 抓取所有的 element, complexType, simpleType, attribute 定義 | Grab all element, complexType, simpleType, and attribute definitions
+            // 注意：使用 getElementsByTagNameNS 處理命名空間，避免前綴(xs:, xsd:)不同導致抓不到 | Note: Use getElementsByTagNameNS to handle namespaces to avoid missing elements due to different prefixes (xs:, xsd:)
             const elements = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
             const complexTypes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'complexType');
             const simpleTypes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'simpleType');
             const attributes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'attribute');
 
-            // Calculate XPath for an element node / 計算元素節點的 XPath
-            // Traverses up until the schema root / 往上遍歷直到 schema 根節點
+            // 計算元素節點的 XPath (向上追溯至 Schema Root) | Calculate XPath of element nodes (tracing up to Schema Root)
+            // 讓使用者知道這個元素在 XML 樹狀結構中的絕對路徑 | Lets the user know the absolute path of this element in the XML tree structure
             function getElementXPath(elem) {
                 let path = [];
                 let current = elem;
                 while (current) {
                     if (current.localName === 'element') {
                         let name = current.getAttribute('name');
-                        if (!name) name = current.getAttribute('ref'); // Handle ref / 處理引用
+                        if (!name) name = current.getAttribute('ref'); // 處理 ref 引用的狀況 | Handle ref attribute references
 
                         if (name) {
-                            if (name.includes(':')) name = name.split(':')[1]; // Strip prefix / 去除前綴
+                            if (name.includes(':')) name = name.split(':')[1]; // 移除 xs: 等前綴 | Remove prefixes like xs:
                             path.unshift(name);
                         }
                     }
@@ -1235,7 +627,8 @@
                 return path.length > 0 ? '/' + path.join('/') : '';
             }
 
-            // Extract constraints from simpleType restrictions / 從 simpleType 限制中提取約束條件
+            // 解析 simpleType 中的限制條件 (Restriction) | Extract constraints from simpleType (Restriction)
+            // 例如：字串長度、數值大小、正規表示法 (pattern) 等等 | E.g.: string length, numerical limits, regular expressions (pattern), etc.
             function extractConstraints(typeNode) {
                 const constraints = {};
                 if (!typeNode) return constraints;
@@ -1250,7 +643,7 @@
                 return constraints;
             }
 
-            // Extract enumeration values / 提取列舉值
+            // 提取列舉值 (Enumeration) -> 生成下拉選單的選項 | Extract enumeration values -> Generate dropdown menu options
             function getEnumerations(typeNode) {
                 if (!typeNode) return [];
                 const restriction = typeNode.querySelector('restriction');
@@ -1259,7 +652,7 @@
                 return Array.from(enumNodes).map(node => node.getAttribute('value'));
             }
 
-            // Parse Complex Type Definitions / 解析複雜類型定義
+            // 遞迴解析：複雜類型定義 (ComplexType) | Recursive parsing: Complex Type definitions (ComplexType)
             function parseComplexType(typeElement) {
                 const children = [];
                 const attrs = [];
@@ -1270,10 +663,10 @@
 
                 const simpleContent = typeElement.querySelector('simpleContent');
                 if (simpleContent) {
-                    // Complex Type with Simple Content (e.g., value + attributes)
+                    // 狀況一：帶有屬性但內容為簡單值的 Complex Type (Simple Content) | Case 1: Complex Type with attributes but simple value content (Simple Content)
                     const extension = simpleContent.querySelector('extension');
                     if (extension) {
-                        valueType = extension.getAttribute('base');
+                        valueType = extension.getAttribute('base'); // 取得基礎型別(如 xs:string) | Get base type (e.g., xs:string)
                         Array.from(extension.querySelectorAll('attribute')).forEach(attr => {
                             const name = attr.getAttribute('name') || attr.getAttribute('ref');
                             if (name) attrs.push({ name: name, use: attr.getAttribute('use') || 'optional' });
@@ -1285,7 +678,7 @@
                         constraints = extractConstraints(simpleContent);
                     }
                 } else {
-                    // Standard Complex Type (Sequence/Choice/All)
+                    // 狀況二：包含子元素的 Complex Type (Sequence / Choice / All) | Case 2: Complex Type containing child elements (Sequence / Choice / All)
                     const sequence = typeElement.querySelector('sequence');
                     const choice = typeElement.querySelector('choice');
                     const all = typeElement.querySelector('all');
@@ -1293,6 +686,7 @@
 
                     if (elements) {
                         hasChildren = true;
+                        // 抓取底下允許的子元素 | Grab allowed child elements underneath
                         Array.from(elements.children).forEach(elem => {
                             if (elem.nodeName.endsWith('element')) {
                                 const name = elem.getAttribute('name') || elem.getAttribute('ref');
@@ -1306,6 +700,7 @@
                             }
                         });
                     }
+                    // 抓取所屬屬性 | Grab associated attributes
                     Array.from(typeElement.querySelectorAll('attribute')).forEach(attr => {
                         const name = attr.getAttribute('name') || attr.getAttribute('ref');
                         if (name) attrs.push({ name: name, use: attr.getAttribute('use') || 'optional' });
@@ -1315,10 +710,12 @@
                 return { hasChildren, valueType, childElements: children, attributes: attrs, enumerations: enumerations, constraints: constraints };
             }
 
-            // Parse Element Definition / 解析元素定義
+            // 解析單一 Element 定義 | Parse single Element definition
             function parseElement(elem) {
                 const name = elem.getAttribute('name');
                 const typeAttr = elem.getAttribute('type');
+                
+                // 初始化元素的屬性結構字典 | Initialize the element's attribute structure dictionary
                 let definition = {
                     element: elem,
                     minOccurs: elem.getAttribute('minOccurs'),
@@ -1332,14 +729,15 @@
                     documentation: "",
                     xsdType: null,
                     xsdTypeName: null,
-                    xpath: getElementXPath(elem) // Calculate XPath / 計算 XPath
+                    xpath: getElementXPath(elem) // 計算該元素的路徑 | Calculate the path of this element
                 };
 
-                // Extract Documentation / 提取說明文件
+                // 提取 XSD 中的 <annotation><documentation> 作為說明文字 | Extract <annotation><documentation> from XSD as explanatory text
                 const annotation = elem.querySelector('annotation');
                 if (annotation) {
                     const docs = annotation.querySelectorAll('documentation');
                     for (let doc of docs) {
+                        // 範例中可能會判斷 source="Definition" | Example might check for source="Definition"
                         if (doc.getAttribute('source') === 'Definition') {
                             definition.documentation = doc.textContent.trim();
                             break;
@@ -1347,9 +745,10 @@
                     }
                 }
 
-                // Handle Named Types (type="...") / 處理具名類型
+                // 若該元素具備 type 屬性 (指向外部定義的 Type) | If the element has a type attribute (pointing to an externally defined Type)
                 if (typeAttr) {
                     definition.xsdTypeName = typeAttr;
+                    // 在 XSD 內尋找對應的 complexType 或 simpleType 定義 | Search within XSD for the corresponding complexType or simpleType definition
                     const typeDef = xsdDoc.getElementById(typeAttr) ||
                         Array.from(complexTypes).find(t => t.getAttribute('name') === typeAttr) ||
                         Array.from(simpleTypes).find(s => s.getAttribute('name') === typeAttr);
@@ -1358,7 +757,7 @@
                         if (typeDef.nodeName.endsWith('complexType')) {
                             definition.xsdType = 'ComplexType';
                             const parsedType = parseComplexType(typeDef);
-                            Object.assign(definition, parsedType);
+                            Object.assign(definition, parsedType); // 將解析出的欄位合併進 definition | Merge parsed fields into definition
                         } else if (typeDef.nodeName.endsWith('simpleType')) {
                             definition.xsdType = 'SimpleType';
                             const restriction = typeDef.querySelector('restriction');
@@ -1369,12 +768,13 @@
                             }
                         }
                     } else {
+                        // 如果找不到，且帶有 xs: 前綴，視為原生的基本型別 (如 xs:string) | If not found and has xs: prefix, consider it a native primitive type (e.g., xs:string)
                         if (typeAttr.startsWith('xs:')) definition.xsdType = 'SimpleType';
                         definition.valueType = typeAttr;
                     }
                 }
 
-                // Handle Inline Types / 處理行內定義類型
+                // 處理行內定義 (Inline Types) - 未具名的 Type 直接包在 Element 底下 | Handle Inline Types - Unnamed Types wrapped directly under Element
                 const inlineComplexType = elem.querySelector('complexType');
                 const inlineSimpleType = elem.querySelector('simpleType');
 
@@ -1394,7 +794,7 @@
                     }
                 }
 
-                // Fallback for simple elements without explicit type / 無明確類型的簡單元素處理
+                // 防呆處理：沒有明確定義型別的簡單元素，預設當作 xs:string 處理 | Failsafe: Simple elements without explicitly defined types default to xs:string
                 if (!typeAttr && !inlineComplexType && !inlineSimpleType) {
                     const isSimple = !elem.querySelector('element') && !elem.querySelector('sequence') && !elem.querySelector('choice') && !elem.querySelector('all');
                     if (isSimple) {
@@ -1407,37 +807,37 @@
                 return definition;
             }
 
-            // Main Loop: Parse all top-level elements / 主迴圈：解析所有頂層元素
+            // XSD 解析主迴圈：將所有頂層元素放入 Map 中緩存 | XSD parsing main loop: Cache all top-level elements into Map
             for (let elem of elements) {
                 const name = elem.getAttribute('name');
                 if (name) xsdElements.set(name, parseElement(elem));
             }
 
-            updateSchemaInfo();
+            updateSchemaInfo(); // 畫面更新 | Update UI
         }
 
-        // Update the Right Panel Info / 更新右側資訊面板
+        // 更新右側面板的 XSD 架構資訊 (產生列表與標籤) | Update the right panel's XSD schema info (generate list and badges)
         function updateSchemaInfo() {
             const schemaInfo = document.getElementById('schemaInfo');
 
-            // Create HTML structure for list
             let listHtml = `<ul id="schemaList" style="list-style: none; padding: 0; overflow-y: auto; flex-grow: 1;">`;
 
+            // 遍歷所有解析過的元素並渲染成列表 | Iterate over all parsed elements and render them as a list
             Array.from(xsdElements.entries()).forEach(([name, def]) => {
                 let constraintsHtml = '<div class="constraints-container">';
 
-                // Type Badges
+                // 渲染型別標籤 (Badge) | Render type badges
                 if (def.xsdType) {
                     const colorClass = def.xsdType === 'ComplexType' ? 'badge-complex' : 'badge-simple';
                     const displayTypeName = def.xsdTypeName && def.xsdTypeName !== '(Anonymous)' ? `: ${def.xsdTypeName}` : '';
                     constraintsHtml += `<span class="constraint-badge ${colorClass}">${def.xsdType}${displayTypeName}</span>`;
                 }
 
-                // Occurs Badges
+                // 出現次數標籤 | Occurrence badges
                 if (def.minOccurs) constraintsHtml += `<span class="constraint-badge badge-count">min: ${def.minOccurs}</span>`;
                 if (def.maxOccurs) constraintsHtml += `<span class="constraint-badge badge-count">max: ${def.maxOccurs}</span>`;
 
-                // Detailed Constraints Badges
+                // 詳細限制條件標籤 | Detailed constraint badges
                 if (def.constraints) {
                     if (def.constraints.pattern) constraintsHtml += `<span class="constraint-badge badge-pattern">Pattern: ${def.constraints.pattern}</span>`;
                     if (def.constraints.totalDigits) constraintsHtml += `<span class="constraint-badge badge-number">TotalDigits: ${def.constraints.totalDigits}</span>`;
@@ -1448,7 +848,7 @@
                     if (def.constraints.maxInclusive) constraintsHtml += `<span class="constraint-badge badge-number">Max: ${def.constraints.maxInclusive}</span>`;
                 }
 
-                // XPath Badge
+                // 渲染 XPath 標籤 | Render XPath badge
                 let xpathAttr = '';
                 if (def.xpath) {
                     xpathAttr = `data-xpath="${def.xpath.toLowerCase()}"`;
@@ -1477,7 +877,7 @@
             `;
         }
 
-        // Filter function for Schema List
+        // Schema 清單過濾功能 (透過文字搜尋) | Schema list filtering function (via text search)
         function filterSchema(val) {
             const filter = val.toLowerCase();
             const items = document.querySelectorAll('.schema-item');
@@ -1487,24 +887,30 @@
                 const xpath = item.getAttribute('data-xpath') || '';
 
                 if (name.includes(filter) || xpath.includes(filter)) {
-                    item.style.display = "";
+                    item.style.display = ""; // 符合條件則顯示 | Display if matching condition
                 } else {
-                    item.style.display = "none";
+                    item.style.display = "none"; // 否則隱藏 | Otherwise hide
                 }
             });
         }
 
-        // Initialize minimal XML from XSD / 從 XSD 初始化最小 XML
+        // 從 XSD 建立一份最小的 XML DOM 作為初始狀態 | Initialize a minimal XML DOM from XSD as initial state
         function initializeXMLDocument() {
             const rootElements = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
             if (rootElements.length > 0) {
                 const rootName = rootElements[0].getAttribute('name');
+                // 產生基礎字串後丟給 DOMParser | Generate base string and pass to DOMParser
                 const xmlString = `<?xml version="1.0" encoding="UTF-8"?>\n<${rootName}></${rootName}>`;
                 xmlDoc = new DOMParser().parseFromString(xmlString, 'text/xml');
 
-                // Handle Namespace / 處理命名空間
+                // 處理解析 Namespace | Handle Namespace parsing
                 const targetNamespace = xsdDoc.documentElement.getAttribute('targetNamespace');
-                if (targetNamespace) xmlDoc.documentElement.setAttribute('xmlns', targetNamespace);
+                if (targetNamespace) {
+                    xmlDoc.documentElement.setAttribute('xmlns', targetNamespace);
+                }
+
+                // --- 動態將 Namespace 更新至網頁標題與 Header | Dynamically update Namespace to Page Title and Header ---
+                updatePageTitleAndHeader(targetNamespace);
 
                 const schemaLocation = xsdDoc.documentElement.getAttribute('schemaLocation');
                 if (schemaLocation) {
@@ -1515,7 +921,7 @@
             }
         }
 
-        // Render Tree View (Recursive) / 渲染樹狀視圖 (遞迴)
+        // 渲染樹狀視圖 (利用遞迴將 XML DOM 轉換成 HTML 介面) | Render tree view (using recursion to convert XML DOM into HTML interface)
         function renderXMLTree() {
             const treeView = document.getElementById('treeView');
             treeView.innerHTML = '';
@@ -1525,35 +931,44 @@
             }
         }
 
-        // Serialize DOM to String / 將 DOM 序列化為字串
+        // 核心：將 XML DOM 序列化並格式化為帶有縮排的字串 | Core: Serialize XML DOM and format into a string with indentation
         function getXmlString() {
             if (!xmlDoc) return '';
             const serializer = new XMLSerializer();
             let formatted = '', indent = '', tab = '  ';
+            
+            // 使用正則切開標籤，並逐行加上縮排 | Use regex to split tags and add indentation line by line
             serializer.serializeToString(xmlDoc).split(/>\s*</).forEach(node => {
-                if (node.match(/^\/\w/)) indent = indent.substring(tab.length);
+                if (node.match(/^\/\w/)) indent = indent.substring(tab.length); // 遇到閉合標籤減少縮排 | Decrease indentation on closing tags
                 formatted += indent + '<' + node + '>\r\n';
-                if (node.match(/^<?\w[^>]*[^\/]$/)) indent += tab;
+                if (node.match(/^<?\w[^>]*[^\/]$/)) indent += tab; // 遇到開啟標籤增加縮排 | Increase indentation on opening tags
             });
-            return formatted.substring(1, formatted.length - 3);
+            return formatted.substring(1, formatted.length - 3); // 去掉頭尾多餘的 < > | Remove extra < > at the ends
         }
 
-        // Update Source View / 更新原始碼視圖
+        // 更新原始碼文字方塊 | Update the source code text area
         function updateXmlView() {
-            if (xmlDoc) { xmlRawInput.value = getXmlString(); updateSyntaxHighlighting(); }
+            if (xmlDoc) { 
+                xmlRawInput.value = getXmlString(); 
+                updateSyntaxHighlighting(); 
+            }
         }
 
-        // Syntax Highlighting Logic / 語法高亮邏輯
+        // 原始碼語法高亮邏輯：使用正則表達式為字串上色 | Source code syntax highlighting logic: Use regex to colorize string
         function updateSyntaxHighlighting() {
             const code = xmlRawInput.value;
+            // 跳脫字元防止 HTML 解析錯誤 | Escape characters to prevent HTML parsing errors
             const highlightedCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
-                .replace(/(&lt;\/?[\w:-]+)/g, '<span class="xml-tag">$1</span>')
-                .replace(/([\w:-]+)=(&quot;.*?&quot;)/g, '<span class="xml-attr-name">$1</span>=<span class="xml-attr-value">$2</span>')
-                .replace(/(&gt;)([^&lt;]+)(&lt;)/g, '$1<span class="xml-content">$2</span>$3');
+                .replace(/(&lt;\/?[\w:-]+)/g, '<span class="xml-tag">$1</span>') // 標籤名 | Tag names
+                .replace(/([\w:-]+)=(&quot;.*?&quot;)/g, '<span class="xml-attr-name">$1</span>=<span class="xml-attr-value">$2</span>') // 屬性=值 | Attribute=Value
+                .replace(/(&gt;)([^&lt;]+)(&lt;)/g, '$1<span class="xml-content">$2</span>$3'); // 內部文字 | Inner text
             xmlHighlight.innerHTML = highlightedCode;
+            
+            // 生成行號 | Generate line numbers
             lineNumbers.innerHTML = Array.from({ length: code.split('\n').length }, (_, i) => i + 1).join('<br>');
         }
 
+        // 切換至原始碼檢視模式 | Switch to Source view mode
         function switchToXmlView() {
             document.getElementById('treeView').style.display = 'none';
             document.getElementById('xmlEditorContainer').style.display = 'block';
@@ -1562,13 +977,14 @@
             updateXmlView();
         }
 
+        // 切換回樹狀檢視模式 (會嘗試解析原始碼，若錯誤則擋下) | Switch back to Tree view mode (attempts to parse source code, blocked if error)
         function switchToTreeView() {
             const parser = new DOMParser();
             const newXmlDoc = parser.parseFromString(xmlRawInput.value, 'text/xml');
             if (newXmlDoc.getElementsByTagName('parsererror').length > 0) {
                 alert(t('msg_load_xsd_first')); return;
             }
-            xmlDoc = newXmlDoc;
+            xmlDoc = newXmlDoc; // 更新全域 Document | Update global Document
             renderXMLTree();
             document.getElementById('treeView').style.display = 'block';
             document.getElementById('xmlEditorContainer').style.display = 'none';
@@ -1576,7 +992,8 @@
             document.getElementById('showXmlViewBtn').classList.remove('active');
         }
 
-        // Create DOM for a single tree node / 建立單一樹狀節點的 DOM
+        // --- 建立單一樹狀節點的 DOM | Create DOM for a single tree node ---
+        // 這是個遞迴函式，會將每一個 XML 節點轉為一個 `<div>` UI 區塊 | This is a recursive function that converts each XML node into a `<div>` UI block
         function createTreeNode(xmlNode, isRoot = false) {
             const nodeDiv = document.createElement('div');
             nodeDiv.className = isRoot ? 'tree-node root' : 'tree-node';
@@ -1586,6 +1003,7 @@
             header.className = 'node-header';
             const hasChildren = xmlNode.children.length > 0;
 
+            // 展開/收起按鈕 | Expand/Collapse button
             if (hasChildren) {
                 const toggleBtn = document.createElement('span');
                 toggleBtn.className = 'toggle-btn';
@@ -1598,11 +1016,13 @@
                 header.appendChild(spacer);
             }
 
+            // 渲染標籤 | Render tag
             const tagSpan = document.createElement('span');
             tagSpan.className = 'node-tag';
             tagSpan.textContent = '<' + xmlNode.nodeName;
             header.appendChild(tagSpan);
 
+            // 渲染該節點的屬性 | Render attributes for the node
             for (let attr of xmlNode.attributes || []) {
                 const attrSpan = document.createElement('span');
                 attrSpan.className = 'node-attribute';
@@ -1614,6 +1034,7 @@
             closeTagSpan.className = 'node-tag'; closeTagSpan.textContent = '>';
             header.appendChild(closeTagSpan);
 
+            // 渲染純文字節點內容 | Render plain text node content
             if (!hasChildren && xmlNode.textContent) {
                 const valueSpan = document.createElement('span');
                 valueSpan.className = 'node-value';
@@ -1621,11 +1042,13 @@
                 header.appendChild(valueSpan);
             }
 
+            // 操作按鈕：新增子節點 | Action button: Add child node
             const addBtn = document.createElement('button');
             addBtn.className = 'add-btn'; addBtn.textContent = t('btn_add_child');
             addBtn.onclick = function (e) { e.stopPropagation(); addChildNode(xmlNode); };
             header.appendChild(addBtn);
 
+            // 根節點不可刪除或編輯自身名稱，所以略過以下按鈕 | Root node cannot be deleted or have its name edited, so skip these buttons
             if (!isRoot) {
                 const editBtn = document.createElement('button');
                 editBtn.className = 'add-btn edit-btn'; editBtn.textContent = t('btn_modify');
@@ -1640,6 +1063,7 @@
 
             nodeDiv.appendChild(header);
 
+            // 遞迴處理子節點 | Recursively process child nodes
             if (hasChildren) {
                 const childrenDiv = document.createElement('div');
                 childrenDiv.className = 'node-children';
@@ -1651,6 +1075,7 @@
             return nodeDiv;
         }
 
+        // 處理節點展開與收起動作 | Handle node expand and collapse actions
         function toggleNode(btn) {
             btn.classList.toggle('collapsed');
             btn.textContent = btn.classList.contains('collapsed') ? '+' : '−';
@@ -1658,12 +1083,13 @@
             if (childrenDiv) childrenDiv.classList.toggle('collapsed');
         }
 
-        // Logic to add a child node / 新增子節點邏輯
+        // --- 新增子節點邏輯 (開啟彈窗) | Add child node logic (Open Modal) ---
         function addChildNode(parentXmlNode) {
             if (!xsdDoc) { alert(t('msg_load_xsd_first')); return; }
             currentNodeToModify = null;
             currentParentNode = parentXmlNode;
 
+            // 抓取 Modal 中的各個 UI 元素 | Grab UI elements inside the Modal
             const modal = document.getElementById('elementModal');
             const modalTitle = document.getElementById('modalTitle');
             const elementOptionsDiv = document.getElementById('elementOptions');
@@ -1674,18 +1100,20 @@
             const attributeOptionsDiv = document.getElementById('attributeOptions');
             const addBtn = modal.querySelector('.modal-btn.primary');
 
+            // 初始化 Modal 狀態 | Initialize Modal state
             modalTitle.textContent = t('modal_title_add');
-            modal.dataset.mode = 'add';
+            modal.dataset.mode = 'add'; // 紀錄當下為 add 模式 | Record current mode as 'add'
             addBtn.textContent = t('btn_confirm');
-
             elementOptionsDiv.innerHTML = '';
             customElementName.value = '';
             valueInputSection.style.display = 'none';
             customInputSection.style.display = 'block';
 
+            // 查詢當前父節點在 XSD 中的定義，以決定它可以有哪些子節點 | Query the current parent node's definition in XSD to determine allowed child nodes
             const parentName = parentXmlNode.nodeName;
             const parentDef = xsdElements.get(parentName);
 
+            // 建立可選子元素清單 (UI 按鈕) | Create selectable child elements list (UI buttons)
             if (parentDef && parentDef.childElements && parentDef.childElements.length > 0) {
                 parentDef.childElements.forEach(elem => {
                     const elemDef = xsdElements.get(elem.name);
@@ -1705,11 +1133,11 @@
 
             attributeInputs.innerHTML = '';
             attributeOptionsDiv.innerHTML = '';
-            addAttributeRow();
+            addAttributeRow(); // 預設給定一組空的屬性輸入框 | Provide an empty attribute input row by default
             modal.classList.add('show');
         }
 
-        // Logic to edit a node / 編輯節點邏輯
+        // --- 編輯節點邏輯 (開啟彈窗) | Edit node logic (Open Modal) ---
         function editNode(xmlNode) {
             if (!xsdDoc) { alert(t('msg_load_xsd_first')); return; }
             currentNodeToModify = xmlNode;
@@ -1721,7 +1149,7 @@
             const customElementName = document.getElementById('customElementName');
             const valueInputSection = document.getElementById('valueInputSection');
 
-            // Get References
+            // 取得各類型輸入框的引用 | Get references to various input fields
             const elementValueInput = document.getElementById('elementValueInput');
             const elementValueSelect = document.getElementById('elementValueSelect');
             const elementValueDate = document.getElementById('elementValueDate');
@@ -1738,7 +1166,7 @@
             const addBtn = modal.querySelector('.modal-btn.primary');
 
             modalTitle.textContent = t('modal_title_edit');
-            modal.dataset.mode = 'edit';
+            modal.dataset.mode = 'edit'; // 紀錄當下為 edit 模式 | Record current mode as 'edit'
             addBtn.textContent = t('btn_confirm');
 
             elementOptionsDiv.innerHTML = '';
@@ -1749,7 +1177,7 @@
             if (elementDef && elementDef.valueType) {
                 valueInputSection.style.display = 'block';
 
-                // Reset Display
+                // 重置所有輸入框的顯示狀態 | Reset display state for all input fields
                 elementValueInput.style.display = 'none';
                 elementValueSelect.style.display = 'none';
                 elementValueDate.style.display = 'none';
@@ -1761,8 +1189,8 @@
                 dateTimeHint.style.display = 'none';
                 timeHint.style.display = 'none';
 
-                // Switch Input based on Type
-                // 1. Enumeration
+                // 根據 XSD 定義的型別，切換適合的 UI 輸入元件 | Switch to the appropriate UI input component based on the XSD defined type
+                // 1. 如果有 Enumeration，顯示 Select | If Enumeration exists, show Select
                 if (elementDef.enumerations && elementDef.enumerations.length > 0) {
                     elementValueSelect.style.display = 'block';
                     enumHint.style.display = 'block';
@@ -1770,25 +1198,25 @@
                         elementDef.enumerations.map(val => `<option value="${val}">${val}</option>`).join('');
                     elementValueSelect.value = xmlNode.textContent;
                 }
-                // 2. Date
+                // 2. 如果是 Date | If Date
                 else if (elementDef.valueType === 'xs:date') {
                     elementValueDate.style.display = 'block';
                     dateHint.style.display = 'block';
                     elementValueDate.value = xmlNode.textContent;
                 }
-                // 3. DateTime
+                // 3. 如果是 DateTime | If DateTime
                 else if (elementDef.valueType === 'xs:dateTime' || elementDef.valueType === 'ISODateTime') {
                     elementValueDateTime.style.display = 'block';
                     dateTimeHint.style.display = 'block';
                     elementValueDateTime.value = xmlNode.textContent;
                 }
-                // 4. Time
+                // 4. 如果是 Time | If Time
                 else if (elementDef.valueType === 'xs:time' || elementDef.valueType === 'ISOTime') {
                     elementValueTime.style.display = 'block';
                     timeHint.style.display = 'block';
                     elementValueTime.value = xmlNode.textContent;
                 }
-                // 5. Default Text
+                // 5. 預設顯示文字方塊 | Default to showing text input
                 else {
                     elementValueInput.style.display = 'block';
                     elementValueInput.value = xmlNode.textContent;
@@ -1797,9 +1225,11 @@
                 valueInputSection.style.display = 'none';
             }
 
+            // 處理屬性渲染 | Handle attribute rendering
             attributeInputs.innerHTML = '';
             attributeOptionsDiv.innerHTML = '';
 
+            // 列出該元素允許設定的所有屬性作為快速點擊按鈕 | List all attributes allowed for this element as quick-click buttons
             if (elementDef && elementDef.attributes.length > 0) {
                 const title = document.createElement('h5');
                 title.style.margin = '0 0 10px 0'; title.style.color = '#4b5563'; title.textContent = t('optional_attrs');
@@ -1813,44 +1243,46 @@
                 });
             }
 
+            // 將已經存在的屬性載入到輸入框中 | Load already existing attributes into the input fields
             Array.from(xmlNode.attributes).forEach(attr => {
                 const newRow = document.createElement('div');
                 newRow.className = 'attribute-row';
                 newRow.innerHTML = `<input type="text" placeholder="${t('ph_attr_name')}" class="attr-name" value="${attr.name}"><input type="text" placeholder="${t('ph_attr_val')}" class="attr-value" value="${attr.value}"><button class="delete-btn" onclick="this.parentNode.remove()">${t('btn_delete')}</button>`;
                 attributeInputs.appendChild(newRow);
             });
-            addAttributeRow();
+            addAttributeRow(); // 多準備一個空的輸入列 | Prepare an extra empty input row
             modal.classList.add('show');
         }
 
+        // 在 Modal 中選擇某個元素選項時的行為 | Behavior when selecting an element option in Modal
         function selectElement(optionDiv, tagName) {
             const allOptions = document.querySelectorAll('.element-option');
             allOptions.forEach(opt => opt.classList.remove('selected'));
-            optionDiv.classList.add('selected');
+            optionDiv.classList.add('selected'); // 標記為選中狀態 | Mark as selected state
             document.getElementById('customElementName').value = tagName;
 
             const elementDef = xsdElements.get(tagName);
             const valueInputSection = document.getElementById('valueInputSection');
+            
+            // ... (取得各輸入框元素) | (Get input field elements) ...
             const elementValueInput = document.getElementById('elementValueInput');
             const elementValueSelect = document.getElementById('elementValueSelect');
             const elementValueDate = document.getElementById('elementValueDate');
             const elementValueDateTime = document.getElementById('elementValueDateTime');
             const elementValueTime = document.getElementById('elementValueTime');
-
             const enumHint = document.getElementById('enumHint');
             const dateHint = document.getElementById('dateHint');
             const dateTimeHint = document.getElementById('dateTimeHint');
             const timeHint = document.getElementById('timeHint');
 
+            // 根據點選的型別動態顯示輸入框，邏輯同 editNode | Dynamically display input fields based on clicked type, logic identical to editNode
             if (elementDef && elementDef.valueType) {
                 valueInputSection.style.display = 'block';
-
                 elementValueInput.style.display = 'none';
                 elementValueSelect.style.display = 'none';
                 elementValueDate.style.display = 'none';
                 elementValueDateTime.style.display = 'none';
                 elementValueTime.style.display = 'none';
-
                 enumHint.style.display = 'none';
                 dateHint.style.display = 'none';
                 dateTimeHint.style.display = 'none';
@@ -1887,9 +1319,11 @@
             }
         }
 
+        // 點擊快速屬性標籤時，自動將屬性加入輸入框列表 | When clicking a quick attribute tag, automatically add it to the input field list
         function addAttributeFromOption(attrName) {
             const attrInputs = document.querySelectorAll('#attributeInputs .attr-name');
             let exists = false;
+            // 避免重複加入 | Avoid duplicate additions
             attrInputs.forEach(input => { if (input.value === attrName) exists = true; });
 
             if (!exists) {
@@ -1900,6 +1334,7 @@
             }
         }
 
+        // 關閉 Modal 並清空狀態 | Close Modal and clear state
         function closeElementModal() {
             const modal = document.getElementById('elementModal');
             modal.classList.remove('show');
@@ -1909,7 +1344,7 @@
             document.getElementById('elementValueSelect').innerHTML = '';
             document.getElementById('elementValueDate').value = '';
             document.getElementById('elementValueDateTime').value = '';
-            document.getElementById('elementValueTime').value = ''; // Reset Time
+            document.getElementById('elementValueTime').value = ''; 
             document.getElementById('attributeInputs').innerHTML = '';
             document.getElementById('attributeOptions').innerHTML = '';
             document.getElementById('valueInputSection').style.display = 'none';
@@ -1917,6 +1352,7 @@
             currentNodeToModify = null;
         }
 
+        // 數值型態基礎驗證：確認使用者輸入的值是否符合 XSD 定義的基本型態 | Basic value type validation: Check if user input matches the basic type defined in XSD
         function validateValue(value, type) {
             if (value === null || value === undefined || value.trim() === '') return true;
             switch (type) {
@@ -1925,20 +1361,21 @@
                 case 'xs:boolean': return value === 'true' || value === 'false' || value === '1' || value === '0';
                 case 'xs:date': return !isNaN(new Date(value));
                 case 'xs:dateTime': case 'ISODateTime': return !isNaN(Date.parse(value));
-                case 'xs:time': case 'ISOTime': return /^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/.test(value);
+                case 'xs:time': case 'ISOTime': return /^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/.test(value); // 時間正則 | Time regex
                 default: return true;
             }
         }
 
+        // Modal 中的「確認」按鈕行為：將 UI 輸入結果更新到 XML DOM 中 | "Confirm" button behavior in Modal: Update UI input results to XML DOM
         function confirmAction() {
             const modal = document.getElementById('elementModal');
-            const mode = modal.dataset.mode;
+            const mode = modal.dataset.mode; // 區分是 add 還是 edit | Distinguish whether it's 'add' or 'edit' mode
             const newName = document.getElementById('customElementName').value.trim();
 
             const elementDef = xsdElements.get(newName);
             let newValue = '';
 
-            // Read Input Value
+            // 根據有顯示的輸入框抓取數值 | Grab values based on which input box is displayed
             if (elementDef && elementDef.enumerations && elementDef.enumerations.length > 0) {
                 newValue = document.getElementById('elementValueSelect').value;
             } else if (elementDef && elementDef.valueType === 'xs:date') {
@@ -1953,10 +1390,12 @@
 
             if (!newName) { alert(t('err_invalid_name')); return; }
 
+            // 進行基礎型別驗證 | Perform basic type validation
             if (elementDef && elementDef.valueType && !validateValue(newValue, elementDef.valueType)) {
                 alert(t('err_invalid_type') + `: ${elementDef.valueType}`); return;
             }
 
+            // 整理屬性 | Compile attributes
             const newAttrs = {};
             document.querySelectorAll('.attribute-row').forEach(row => {
                 const attrName = row.querySelector('.attr-name').value.trim();
@@ -1965,12 +1404,14 @@
             });
 
             if (mode === 'add') {
+                // 新增模式：建立新元素並插入到父節點 | Add mode: Create new element and insert into parent node
                 const newNode = xmlDoc.createElement(newName);
                 for (const name in newAttrs) newNode.setAttribute(name, newAttrs[name]);
                 if (elementDef && elementDef.valueType) newNode.textContent = newValue;
                 currentParentNode.appendChild(newNode);
                 updateStatus(t('val_updated'));
             } else if (mode === 'edit' && currentNodeToModify) {
+                // 編輯模式：如果名稱改變，需要建立新節點來替換舊節點 | Edit mode: If the name changes, create a new node to replace the old one
                 const oldName = currentNodeToModify.nodeName;
                 if (oldName !== newName) {
                     const newElement = xmlDoc.createElement(newName);
@@ -1978,12 +1419,14 @@
                     currentNodeToModify.parentNode.replaceChild(newElement, currentNodeToModify);
                     currentNodeToModify = newElement;
                 }
+                // 清空舊屬性，填入新屬性 | Clear old attributes and fill in new ones
                 Array.from(currentNodeToModify.attributes).forEach(attr => currentNodeToModify.removeAttribute(attr.name));
                 for (const name in newAttrs) currentNodeToModify.setAttribute(name, newAttrs[name]);
                 if (elementDef && elementDef.valueType) currentNodeToModify.textContent = newValue;
                 updateStatus(t('val_updated'));
             }
 
+            // 更新完 DOM 後重新渲染 UI | Re-render UI after DOM update
             renderXMLTree();
             closeElementModal();
         }
@@ -1996,20 +1439,23 @@
             attributeInputs.appendChild(newRow);
         }
 
+        // 刪除節點 | Delete node
         function deleteNode(xmlNode, nodeDiv) {
             if (confirm(t('confirm_del'))) {
                 xmlNode.parentNode.removeChild(xmlNode);
-                nodeDiv.remove();
+                nodeDiv.remove(); // 直接移除 DOM 元素，不用整棵樹重新渲染，效能較好 | Remove DOM element directly; better performance than re-rendering the whole tree
                 updateNodeCount();
                 updateStatus(t('node_deleted'));
             }
         }
 
+        // --- 核心驗證邏輯：比對 XML 文件與 XSD 定義 | Core Validation Logic: Compare XML document against XSD definition ---
         function validateXML() {
             if (!xsdDoc || !xmlDoc) { alert(t('msg_load_xsd_first')); return; }
             const resultDiv = document.getElementById('validationResult');
-            resultDiv.innerHTML = `<div class="loading"></div> ${t('validating')}`;
+            resultDiv.innerHTML = `<div class="loading"></div> ${t('validating')}`; // 顯示載入動畫 | Show loading animation
 
+            // 使用 setTimeout 讓 UI 先更新(轉圈圈)，再執行吃重的驗證邏輯 | Use setTimeout to let UI update first (spinner), then run heavy validation logic
             setTimeout(() => {
                 const validationErrors = performDetailedValidation();
                 if (validationErrors.length === 0) {
@@ -2020,6 +1466,7 @@
             }, 500);
         }
 
+        // 觸發遞迴驗證 | Trigger recursive validation
         function performDetailedValidation() {
             const errors = [];
             const rootName = xmlDoc.documentElement.nodeName;
@@ -2028,16 +1475,19 @@
             return errors;
         }
 
+        // 單一元素的驗證邏輯 (會被遞迴呼叫) | Single element validation logic (called recursively)
         function validateElement(xmlElement, expectedName, errors) {
             const elementDef = xsdElements.get(expectedName);
             if (!elementDef) return;
 
+            // 1. 檢查必填屬性是否存在 | 1. Check if required attributes exist
             if (elementDef.attributes) {
                 elementDef.attributes.forEach(attr => {
                     if (attr.use === 'required' && !xmlElement.hasAttribute(attr.name)) errors.push(`${t('missing_attr')}: "${attr.name}" @ <${expectedName}>`);
                 });
             }
 
+            // 2. 檢查數值與列舉值是否正確 | 2. Check if values and enumeration values are correct
             if (elementDef.valueType) {
                 const val = xmlElement.textContent;
                 if (!validateValue(val, elementDef.valueType)) errors.push(`${t('type_err')} "${elementDef.valueType}": "${val}" @ <${expectedName}>`);
@@ -2047,8 +1497,11 @@
                 }
             }
 
+            // 3. 檢查子元素結構 (數量、必要性、是否合乎規範) | 3. Check child element structure (quantity, requirement, validity)
             if (elementDef.hasChildren) {
                 const requiredChildren = elementDef.childElements.filter(child => child.minOccurs !== '0');
+                
+                // 檢查是否缺少必要子元素，或是否超過最大出現次數 | Check if required child elements are missing or exceed max occurrences
                 requiredChildren.forEach(requiredChild => {
                     const childNodes = Array.from(xmlElement.children).filter(child => child.nodeName === requiredChild.name);
                     if (childNodes.length === 0) errors.push(`${t('missing_child')}: "${requiredChild.name}" @ <${expectedName}>`);
@@ -2057,23 +1510,28 @@
                         if (childNodes.length > maxOccurs) errors.push(`${t('max_occurs_err')}: "${requiredChild.name}" (Max: ${maxOccurs})`);
                     }
                 });
+
+                // 遞迴驗證所有實際存在的子元素 | Recursively validate all existing child elements
                 Array.from(xmlElement.children).forEach(child => {
                     const childDef = elementDef.childElements.find(ce => ce.name === child.nodeName);
+                    // 若子節點沒有在 schema 中定義 | If child node is not defined in the schema
                     if (!childDef && !xsdElements.has(child.nodeName)) errors.push(`${t('invalid_child')}: "${child.nodeName}" @ <${expectedName}>`);
                     validateElement(child, child.nodeName, errors);
                 });
             }
         }
 
+        // 匯出功能：產生 URL 讓使用者下載 xml 檔案 | Export function: Generate URL for user to download xml file
         function exportXML() {
             if (!xmlDoc) { alert(t('no_xml_export')); return; }
             const blob = new Blob([getXmlString()], { type: 'text/xml' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = 'document.xml'; a.click();
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(url); // 釋放記憶體 | Free memory
             updateStatus(t('xml_exported'));
         }
 
+        // 清除全部資料並重置畫面狀態 | Clear all data and reset screen state
         function clearAll() {
             if (confirm(t('confirm_clear'))) {
                 xsdDoc = null; xmlDoc = null; xsdElements.clear();
@@ -2083,21 +1541,27 @@
                 document.getElementById('validationResult').innerHTML = '';
                 document.getElementById('validateBtn').disabled = true;
                 document.getElementById('xsdFile').value = '';
+                
+                // 清除標題與 Namespace 顯示 | Clear Title and Namespace display
+                updatePageTitleAndHeader(null); 
+                
                 updateNodeCount(); updateStatus(t('cleared'));
             }
         }
 
+        // 更新左下角的簡易狀態文字 | Update simple status text at bottom left
         function updateStatus(message) {
             document.getElementById('statusText').textContent = message;
-            setTimeout(() => { document.getElementById('statusText').textContent = t('status_ready'); }, 3000);
+            setTimeout(() => { document.getElementById('statusText').textContent = t('status_ready'); }, 3000); // 3 秒後恢復預設狀態 | Revert to default state after 3 seconds
         }
 
+        // 更新節點數量計算 | Update node count calculation
         function updateNodeCount() {
             const count = xmlDoc ? xmlDoc.getElementsByTagName('*').length : 0;
             document.getElementById('nodeCount').textContent = `${t('status_nodes').split(':')[0]}: ${count}`;
         }
 
-        // Back to Top functionality / 回到頂部功能
+        // Back to Top (回到頂部按鈕顯示邏輯) | Back to Top (Button visibility logic)
         const backToTopBtn = document.getElementById('backToTopBtn');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
@@ -2108,21 +1572,68 @@
         });
 
         function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // 平滑捲動至頂部 | Smooth scroll to top
         }
 
+        // 鍵盤快速鍵綁定 | Keyboard shortcut bindings
         document.addEventListener('keydown', function (e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (xmlDoc) exportXML(); }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'v') { e.preventDefault(); if (!document.getElementById('validateBtn').disabled) validateXML(); }
-            if (e.key === 'Escape') {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (xmlDoc) exportXML(); } // Ctrl+S 匯出 | Ctrl+S Export
+            if ((e.ctrlKey || e.metaKey) && e.key === 'v') { e.preventDefault(); if (!document.getElementById('validateBtn').disabled) validateXML(); } // Ctrl+V 驗證 (若需要的話) | Ctrl+V Validate (If needed)
+            if (e.key === 'Escape') { // Esc 關閉彈窗 | Esc closes Modal
                 const modal = document.getElementById('elementModal');
                 if (modal.classList.contains('show')) closeElementModal();
             }
         });
+
+        // 點擊彈窗外部區域關閉視窗 | Click outside the modal area to close window
         window.onclick = function (event) {
             const modal = document.getElementById('elementModal');
             if (event.target === modal) closeElementModal();
         };
+
+        // ==========================================
+        // 自動載入預設 XSD 邏輯 | Auto-load Default XSD Logic
+        // ==========================================
+        // 將您的預設 XSD 內容貼入此字串中。若字串不為空，系統將在網頁載入時自動解析並生成編輯器。
+        // Paste your default XSD content into this string. If not empty, the system will auto-parse it on page load.
+        const defaultXSDString = ``; 
+
+        // 封裝自動載入的執行函式 | Encapsulate the auto-load execution function
+        function loadDefaultXSD() {
+            // 檢查 defaultXSDString 是否有實際內容 | Check if defaultXSDString has actual content
+            if (defaultXSDString && defaultXSDString.trim() !== "") {
+                try {
+                    const parser = new DOMParser();
+                    
+                    // 將純文字字串解析為 XML DOM 物件 | Parse the plain text string into an XML DOM object
+                    xsdDoc = parser.parseFromString(defaultXSDString, 'text/xml');
+                    
+                    // 檢查解析過程是否發生 XML 格式錯誤 | Check if XML format errors occurred during parsing
+                    if (xsdDoc.getElementsByTagName('parsererror').length > 0) {
+                        throw new Error(t('invalid_xsd'));
+                    }
+
+                    // 執行與「手動上傳 XSD 檔案」完全相同的核心初始化邏輯 | Execute the exact same core initialization logic as "manual XSD file upload"
+                    parseXSDSchema(); 
+                    initializeXMLDocument(); 
+                    
+                    // 解除鎖定驗證按鈕，並更新畫面狀態提示 | Unlock the validate button and update the UI status prompt
+                    document.getElementById('validateBtn').disabled = false;
+                    updateStatus(t('xsd_loaded'));
+                    
+                    console.log("Default XSD loaded successfully.");
+                } catch (error) {
+                    console.error("Failed to load default XSD:", error);
+                    alert(t('load_fail') + error.message);
+                }
+            }
+        }
+
+        // 將自動載入函式綁定到 DOMContentLoaded 事件 | Bind the auto-load function to the DOMContentLoaded event
+        // 這樣可確保多國語系 (initLanguage) 已經設定完成，且 UI 元素都已準備好 | This ensures i18n (initLanguage) is set up and UI elements are ready
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDefaultXSD();
+        });
     </script>
 </body>
 
