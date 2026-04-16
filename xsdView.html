@@ -788,6 +788,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: default;
         }
 
         .badge-xpath:before {
@@ -1322,30 +1323,7 @@
             const elements = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
             const complexTypes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'complexType');
             const simpleTypes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'simpleType');
-            const attributes = xsdDoc.getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'attribute');
-
-            // 計算元素節點的 XPath | Calculate XPath
-            function getElementXPath(elem) {
-                let path = [];
-                let current = elem;
-                
-                while (current) {
-                    if (current.localName === 'element') {
-                        let name = current.getAttribute('name');
-                        if (!name) name = current.getAttribute('ref');
-
-                        if (name) {
-                            if (name.includes(':')) name = name.split(':')[1];
-                            path.unshift(name);
-                        }
-                    }
-                    if (current.localName === 'schema') break;
-                    current = current.parentNode;
-                }
-                
-                return path.length > 0 ? '/' + path.join('/') : '';
-            }
-
+            
             // 解析 simpleType 限制條件 | Extract constraints
             function extractConstraints(typeNode) {
                 const constraints = {};
@@ -1459,7 +1437,7 @@
                     documentation: "",
                     xsdType: null,
                     xsdTypeName: null,
-                    xpath: getElementXPath(elem)
+                    xpath: "" // 將在所有解析完成後統一計算 | Will be calculated after all parsing is done
                 };
 
                 const annotation = elem.querySelector('annotation');
@@ -1533,6 +1511,7 @@
                 return definition;
             }
 
+            // 1. 初步解析所有元素並存入 Map | Initial parsing of all elements into Map
             for (let elem of elements) {
                 const name = elem.getAttribute('name');
                 if (name) {
@@ -1540,6 +1519,50 @@
                 }
             }
 
+            // --- 邏輯 XPath 計算 (Logical XPath Calculation) ---
+            // 根據元素的父子結構，計算出從根節點到該元素的完整 XPath | Calculate full XPath from root based on parent-child structure
+            function assignLogicalXPaths() {
+                // 1. 找出 XSD 定義中的根元素 (在 <schema> 根節點底下的 <element>) | Find root elements defined directly under <schema>
+                const rootElements = Array.from(xsdDoc.documentElement.children)
+                    .filter(node => node.localName === 'element')
+                    .map(node => node.getAttribute('name'))
+                    .filter(Boolean);
+
+                // 2. 遞迴遍歷邏輯結構，給予完整 XPath | Recursively traverse logical structure to assign full XPath
+                function traverse(elemName, currentPath, visitedInPath) {
+                    if (visitedInPath.has(elemName)) return; // 避免遞迴無限迴圈 | Prevent infinite recursion
+
+                    const def = xsdElements.get(elemName);
+                    if (!def) return;
+
+                    const newPath = currentPath + '/' + elemName;
+                    
+                    // 如果是第一次走到，或者找到更短的路徑，就更新 | Keep the first or shortest valid XPath
+                    if (!def.xpath || newPath.length < def.xpath.length) {
+                        def.xpath = newPath;
+                    }
+
+                    if (def.childElements && def.childElements.length > 0) {
+                        const nextVisited = new Set(visitedInPath);
+                        nextVisited.add(elemName);
+                        def.childElements.forEach(child => {
+                            traverse(child.name, newPath, nextVisited);
+                        });
+                    }
+                }
+
+                // 從所有根元素開始往下走訪 | Start traversal from all root elements
+                rootElements.forEach(rootName => traverse(rootName, '', new Set()));
+
+                // 防呆：如果某些元素沒有被根節點追溯到，給予預設 XPath | Failsafe for orphaned elements
+                xsdElements.forEach((def, name) => {
+                    if (!def.xpath) {
+                        def.xpath = '/' + name; 
+                    }
+                });
+            }
+
+            assignLogicalXPaths(); // 執行 XPath 計算 | Execute XPath calculation
             updateSchemaInfo();
         }
 
@@ -1573,7 +1596,8 @@
                 let xpathAttr = '';
                 if (def.xpath) {
                     xpathAttr = `data-xpath="${def.xpath.toLowerCase()}"`;
-                    constraintsHtml += `<span class="constraint-badge badge-xpath" title="XPath">${def.xpath}</span>`;
+                    // 修改：將 hover title 設定為完整 XPath 字串 | Modify: set hover title to full XPath string
+                    constraintsHtml += `<span class="constraint-badge badge-xpath" title="${def.xpath}">${def.xpath}</span>`;
                 }
 
                 constraintsHtml += '</div>';
