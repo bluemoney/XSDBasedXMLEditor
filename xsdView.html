@@ -2354,27 +2354,42 @@
             updateStatus(t('xml_exported'));
         }
 
+        // ------------------------------------------
+        // 修改版：清除全部 / 重置為預設功能
+        // ------------------------------------------
         function clearAll() {
             if (confirm(t('confirm_clear'))) {
-                xsdDoc = null; 
-                xmlDoc = null; 
-                xsdElements.clear();
-                
-                document.getElementById('treeView').innerHTML = `
-                    <p style="color: #9ca3af; text-align: center; padding: 50px;">
-                        ${t('msg_load_xsd_first')}
-                    </p>`;
-                xmlRawInput.value = ''; 
-                updateSyntaxHighlighting();
-                
-                document.getElementById('schemaInfo').innerHTML = `<p>${t('msg_no_schema')}</p>`;
+                // 先清除驗證結果與上傳的檔案路徑 | Clear validation results and file input
                 document.getElementById('validationResult').innerHTML = '';
-                document.getElementById('validateBtn').disabled = true;
                 document.getElementById('xsdFile').value = '';
-                
-                updatePageTitleAndHeader(null); 
-                updateNodeCount(); 
-                updateStatus(t('cleared'));
+
+                // 判斷是否設定了預設的 XSD 與 XML | Check if both default XSD and XML are set
+                if (typeof defaultXSDString !== 'undefined' && defaultXSDString.trim() !== "" && 
+                    typeof defaultXMLString !== 'undefined' && defaultXMLString.trim() !== "") {
+                    
+                    // 重新載入預設的 XSD 與 XML (相當於重置) | Reload default XSD and XML (reset to default)
+                    loadDefaultXSDAndXML();
+                    updateStatus(t('cleared') + " (已恢復預設狀態)"); 
+                } else {
+                    // 若無預設值，維持原有的澈底清除動作 | If no defaults, maintain original clear action
+                    xsdDoc = null; 
+                    xmlDoc = null; 
+                    xsdElements.clear();
+                    
+                    document.getElementById('treeView').innerHTML = `
+                        <p style="color: #9ca3af; text-align: center; padding: 50px;">
+                            ${t('msg_load_xsd_first')}
+                        </p>`;
+                    xmlRawInput.value = ''; 
+                    updateSyntaxHighlighting();
+                    
+                    document.getElementById('schemaInfo').innerHTML = `<p>${t('msg_no_schema')}</p>`;
+                    document.getElementById('validateBtn').disabled = true;
+                    
+                    updatePageTitleAndHeader(null); 
+                    updateNodeCount(); 
+                    updateStatus(t('cleared'));
+                }
             }
         }
 
