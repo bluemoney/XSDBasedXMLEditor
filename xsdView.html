@@ -1659,6 +1659,18 @@
         // XML 格式化與 XSD 排序邏輯 | XML Formatting & XSD Sorting
         // ==========================================
 
+        // [新增] 遞迴移除 DOM 中多餘的空白文字節點 (避免換行與縮排錯亂) | Clean empty text nodes
+        function removeEmptyTextNodes(node) {
+            for (let i = node.childNodes.length - 1; i >= 0; i--) {
+                const child = node.childNodes[i];
+                if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim() === '') {
+                    node.removeChild(child);
+                } else if (child.nodeType === Node.ELEMENT_NODE) {
+                    removeEmptyTextNodes(child);
+                }
+            }
+        }
+
         // 根據 XSD 定義的順序重新排列 XML 節點 | Reorder XML nodes based on XSD defined sequence
         function sortXmlByXsd(xmlNode) {
             if (!xsdElements || !xmlNode) return;
@@ -1695,26 +1707,34 @@
         function getXmlString() {
             if (!xmlDoc) return '';
             
-            // 1. 根據 XSD 定義的順序，自動校正與排序 XML 節點 | 1. Auto-correct and sort XML nodes based on XSD sequence
+            // 1. 先清除多餘的空白節點，確保排版基準乾淨 | 1. Clean empty text nodes
+            if (xmlDoc.documentElement) {
+                removeEmptyTextNodes(xmlDoc.documentElement);
+            }
+
+            // 2. 根據 XSD 定義的順序，自動校正與排序 XML 節點 | 2. Auto-correct and sort XML nodes based on XSD sequence
             if (xmlDoc.documentElement) {
                 sortXmlByXsd(xmlDoc.documentElement);
             }
             
-            // 2. 將 DOM 轉為原始字串 | 2. Serialize DOM to raw string
+            // 3. 將 DOM 轉為原始字串 | 3. Serialize DOM to raw string
             const serializer = new XMLSerializer();
             let xmlStr = serializer.serializeToString(xmlDoc);
 
-            // [新增] 移除空的命名空間屬性 xmlns="" | [NEW] Remove empty namespace attributes
+            // 移除空的命名空間屬性 xmlns="" | Remove empty namespace attributes
             xmlStr = xmlStr.replace(/\s+xmlns=""/g, '');
             
-            // 3. 進行 XML 美化排版 (Pretty Print) | 3. XML Pretty Print formatting
+            // 4. 進行 XML 美化排版 (Pretty Print) | 4. XML Pretty Print formatting
             let formatted = '';
             let pad = 0;
             
             // 在相連的標籤之間加入換行符號 | Add line breaks between adjacent tags
             xmlStr = xmlStr.replace(/(>)(<)(\/*)/g, '$1\n$2$3'); 
             
-            xmlStr.split('\n').forEach(node => {
+            xmlStr.split('\n').forEach(line => {
+                let node = line.trim(); // 移除字串兩側的原有空白 | Remove original whitespace
+                if (!node) return;      // 如果是空行，直接跳過 | Skip empty lines
+                
                 let indent = 0;
                 if (node.match( /.+<\/\w[^>]*>$/ )) { // 單行包含內容的標籤，如 <tag>value</tag>
                     indent = 0;
@@ -1724,7 +1744,7 @@
                     }
                 } else if (node.match( /^<\w[^>]*[^\/]>.*$/ )) { // 開始標籤，如 <tag>
                     indent = 1;
-                } else { // 自閉合標籤或其他
+                } else { // 自閉合標籤 (如 <MsgId/>) 或其他
                     indent = 0;
                 }
 
