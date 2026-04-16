@@ -1655,24 +1655,84 @@
             }
         }
 
-        // 序列化 XML | Serialize XML DOM
+        // ==========================================
+        // XML 格式化與 XSD 排序邏輯 | XML Formatting & XSD Sorting
+        // ==========================================
+
+        // 根據 XSD 定義的順序重新排列 XML 節點 | Reorder XML nodes based on XSD defined sequence
+        function sortXmlByXsd(xmlNode) {
+            if (!xsdElements || !xmlNode) return;
+            
+            const nodeName = xmlNode.nodeName;
+            const def = xsdElements.get(nodeName);
+
+            // 如果有定義子元素，且數量大於0，代表有特定的順序規範 | If child elements are defined, they dictate the sequence
+            if (def && def.childElements && def.childElements.length > 0) {
+                // 建立順序對照表 | Create order map
+                const orderMap = new Map();
+                def.childElements.forEach((childDef, index) => {
+                    orderMap.set(childDef.name, index);
+                });
+
+                // 將 HTMLCollection 轉為陣列以進行排序 | Convert HTMLCollection to Array for sorting
+                const children = Array.from(xmlNode.children);
+                
+                children.sort((a, b) => {
+                    const indexA = orderMap.has(a.nodeName) ? orderMap.get(a.nodeName) : 9999;
+                    const indexB = orderMap.has(b.nodeName) ? orderMap.get(b.nodeName) : 9999;
+                    return indexA - indexB;
+                });
+
+                // 將排序後的節點重新附加回父節點 (這會自動移動 DOM 位置) | Re-append sorted nodes (this moves them in the DOM)
+                children.forEach(child => xmlNode.appendChild(child));
+            }
+
+            // 遞迴處理所有子節點 | Recursively sort all children
+            Array.from(xmlNode.children).forEach(child => sortXmlByXsd(child));
+        }
+
+        // 核心：將 XML DOM 序列化並格式化為帶有縮排的字串 | Core: Serialize XML DOM and format into an indented string
         function getXmlString() {
             if (!xmlDoc) return '';
             
-            const serializer = new XMLSerializer();
-            let formatted = '', indent = '', tab = '  ';
+            // 1. 根據 XSD 定義的順序，自動校正與排序 XML 節點 | 1. Auto-correct and sort XML nodes based on XSD sequence
+            if (xmlDoc.documentElement) {
+                sortXmlByXsd(xmlDoc.documentElement);
+            }
             
-            serializer.serializeToString(xmlDoc).split(/>\s*</).forEach(node => {
-                if (node.match(/^\/\w/)) {
-                    indent = indent.substring(tab.length);
+            // 2. 將 DOM 轉為原始字串 | 2. Serialize DOM to raw string
+            const serializer = new XMLSerializer();
+            let xmlStr = serializer.serializeToString(xmlDoc);
+
+            // [新增] 移除空的命名空間屬性 xmlns="" | [NEW] Remove empty namespace attributes
+            xmlStr = xmlStr.replace(/\s+xmlns=""/g, '');
+            
+            // 3. 進行 XML 美化排版 (Pretty Print) | 3. XML Pretty Print formatting
+            let formatted = '';
+            let pad = 0;
+            
+            // 在相連的標籤之間加入換行符號 | Add line breaks between adjacent tags
+            xmlStr = xmlStr.replace(/(>)(<)(\/*)/g, '$1\n$2$3'); 
+            
+            xmlStr.split('\n').forEach(node => {
+                let indent = 0;
+                if (node.match( /.+<\/\w[^>]*>$/ )) { // 單行包含內容的標籤，如 <tag>value</tag>
+                    indent = 0;
+                } else if (node.match( /^<\/\w/ )) { // 結尾標籤，如 </tag>
+                    if (pad !== 0) {
+                        pad -= 1;
+                    }
+                } else if (node.match( /^<\w[^>]*[^\/]>.*$/ )) { // 開始標籤，如 <tag>
+                    indent = 1;
+                } else { // 自閉合標籤或其他
+                    indent = 0;
                 }
-                formatted += indent + '<' + node + '>\r\n';
-                if (node.match(/^<?\w[^>]*[^\/]$/)) {
-                    indent += tab;
-                }
+
+                formatted += '    '.repeat(pad) + node + '\n'; // 使用 4 個空白作為縮排 | Use 4 spaces for indentation
+                pad += indent;
             });
             
-            return formatted.substring(1, formatted.length - 3); 
+            return formatted.trim(); 
         }
 
         function updateXmlView() {
